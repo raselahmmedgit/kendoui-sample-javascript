@@ -25,6 +25,32 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        public ActionResult CustomPagination()
+        {
+            return View();
+        }
+
+        public JsonResult CategoryRead(KendoUiGridParamViewModel request)
+        {
+            var categories = GetCategories();
+            //List<Category> models = GetCategories();
+
+            //var models = GetCategories();
+            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
+        //private IEnumerable<Category> GetCategories()
+        private List<Category> GetCategories()
+        {
+            var categories = _db.Categories.ToList().Select(c => new Category { CategoryId = c.CategoryId, Name = c.Name });
+
+            //return categories.AsQueryable();
+            return categories.ToList();
+        }
+
+
         #region Demo Data
 
         public JsonResult GridMasterRead(FilterViewModel filterModel)
