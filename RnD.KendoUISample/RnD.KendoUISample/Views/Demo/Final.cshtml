@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<div id="indexPage">
+    <div id="gridZone">
+        <div id="grid">
+        </div>
+    </div>
+</div>
+<script type="text/x-kendo-template" id="detailTemplate">
+
+<div class='detail'>
+</div>
+
+</script>
+<script type="text/x-kendo-template" id="detailItemTemplate">
+
+<div class='detailItem'>
+</div>
+
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Demo/GridMasterDataRead"
+                    }
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            Id: { type: "number" },
+                            Title: { type: "string" },
+                            CommittedAmount: { type: "number" },
+                            DisbursedAmount: { type: "number" },
+                            ExpendedAmount: { type: "number" },
+                        }
+                    }
+                },
+                aggregate: [
+                                { field: "CommittedAmount", aggregate: "sum" },
+                                { field: "DisbursedAmount", aggregate: "sum" },
+                                { field: "ExpendedAmount", aggregate: "sum" }
+                           ],
+                pageSize: 10,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            },
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            columnMenu: true,
+            resizable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            detailTemplate: kendo.template($("#detailTemplate").html()),
+            detailInit: detailInit,
+            detailExpand: function () {
+                $("#grid tbody .detail thead").hide();
+            },
+            columns: [
+                        { field: "Id", title: "Id", filterable: false, "menu": false },
+                        { field: "Title", title: "Funding Source/Funding Agency/Project", footerTemplate: "Grand Total:", width: 250 },
+                        { field: "CommittedAmount", title: "Committed", format: "{0:n}", footerTemplate: "#= kendo.toString(sum, 'c') #", filterable: false, sortable: false, width: 150 },
+                        { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", footerTemplate: "#= kendo.toString(sum, 'c') #", filterable: false, sortable: false, width: 150 },
+                        { field: "ExpendedAmount", title: "Expended", format: "{0:n}", footerTemplate: "#= kendo.toString(sum, 'c') #", filterable: false, sortable: false, width: 150 }
+                     ]
+        }); //end of kendo grid
+
+        function detailInit(e) {
+
+            var detailRow = e.detailRow;
+
+            var masterId = e.data.Id;
+
+            detailRow.find(".detail").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/Demo/GridDetailDataRead/" + masterId
+                        }
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false
+                },
+                scrollable: false,
+                sortable: false,
+                filterable: false,
+                pageable: false,
+                detailTemplate: kendo.template($("#detailItemTemplate").html()),
+                detailInit: detailItemInit,
+                detailExpand: function () {
+                    $("#grid tbody .detailItem thead").hide();
+                },
+                columns: [
+                            { field: "Id", title: "Id", hidden: true },
+                            { field: "Title", title: "Fund Agency", width: 200 },
+                            { field: "CommittedAmount", title: "Committed", format: "{0:n}", width: 130 },
+                            { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", width: 135 },
+                            { field: "ExpendedAmount", title: "Expended", format: "{0:n}", width: 135 }
+                        ]
+            });
+
+        } //end of detailInit
+
+        function detailItemInit(e) {
+
+            var detailRow = e.detailRow;
+
+            var detailId = e.data.Id;
+            var masterId = e.data.PId;
+
+            console.log(masterId);
+
+            var paramValue = { id: detailId, pid: masterId };
+
+            console.log(paramValue);
+
+            detailRow.find(".detailItem").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/Demo/GridDetailItemDataRead" ,
+                            data: paramValue
+                        }
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false
+                },
+                scrollable: false,
+                sortable: false,
+                filterable: false,
+                pageable: false,
+                columns: [
+                            { field: "Id", title: "Id", hidden: true },
+                            { field: "Title", title: "Project", template: "<a href='/Home/Project/#= Id #' class='lnkName'>#= Title #</a>", width: 222 },
+                            { field: "CommittedAmount", title: "Committed", format: "{0:n}", width: 150 },
+                            { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", width: 150 },
+                            { field: "ExpendedAmount", title: "Expended", format: "{0:n}", width: 150 }
+                        ]
+            });
+
+        } //end of detailItemInit
+
+    });
+
+</script>

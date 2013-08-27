@@ -1,0 +1,343 @@
+﻿@{
+    ViewBag.Title = "Like DAD List Page For Filter";
+}
+<div id="dadFilterPage">
+    <div id="gridZone">
+        <div id="grid">
+        </div>
+    </div>
+    <div id="filterZone">
+        <ul>
+            <li><a id="lnkFundSource" class="lnkFilterDialog" href="/Home/FilterDialog/1">Fund Source</a></li>
+            <li><a id="lnkFundAgency" class="lnkFilterDialog" href="/Home/FilterDialog/2">Fund Agency</a></li>
+            <li><a id="lnkProject" class="lnkFilterDialog" href="/Home/FilterDialog/3">Project</a></li>
+            <li><a id="lnkSector" class="lnkFilterDialog" href="/Home/FilterDialog/4">Sector</a></li>
+            <li><a id="lnkProvinceOrArea" class="lnkFilterDialog" href="/Home/FilterDialog/5">Province
+                Or Area</a></li>
+            <li><a id="lnkDistrictOrAgency" class="lnkFilterDialog" href="/Home/FilterDialog/6">
+                District Or Agency</a></li>
+            <li><a id="lnkReferenceNumber" class="lnkFilterDialog" href="/Home/FilterDialog/7">Reference
+                Number</a></li>
+            <li><a id="lnkFiscalYear" class="lnkFilterDialog" href="/Home/FilterDialog/8">Fiscal
+                Year</a></li>
+        </ul>
+        <!-- <div>
+            <strong>Fund Source:</strong>
+            <input type="text" name="txtFundSource" id="txtFundSource" value=" " />
+        </div>
+        <div>
+            <strong>Fund Agency:</strong>
+            <input type="text" name="txtFundAgency" id="txtFundAgency" value=" " />
+        </div>
+        <div>
+            <strong>Project:</strong>
+            <input type="text" name="txtProject" id="txtProject" value=" " />
+        </div>
+        <div>
+            <strong>Sector:</strong>
+            <input type="text" name="txtSector" id="txtSector" value=" " />
+        </div>
+        <div>
+            <strong>Province Or Area:</strong>
+            <input type="text" name="txtProvinceOrArea" id="txtProvinceOrArea" value=" " />
+        </div>
+        <div>
+            <strong>District Or Agency:</strong>
+            <input type="text" name="txtDistrictOrAgency" id="txtDistrictOrAgency" value=" " />
+        </div>
+        <div>
+            <strong>Reference Number:</strong>
+            <input type="text" name="txtReferenceNumber" id="txtReferenceNumber" value=" " />
+        </div>
+        <div>
+            <strong>Fiscal Year:</strong>
+            <input type="text" name="txtFiscalYear" id="txtFiscalYear" value=" " />
+        </div>
+        <div>
+            <button id="btnOk">
+                Ok</button>
+        </div> -->
+    </div>
+    <div id="fiterPopUp">
+        <div id="filterDialog" title="Filter">
+        </div>
+    </div>
+</div>
+<script type="text/x-kendo-template" id="detailTemplate">
+
+<div class='detail'>
+</div>
+
+</script>
+<script type="text/x-kendo-template" id="detailItemTemplate">
+
+<div class='detailItem'>
+</div>
+
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Home/DadDataListRead",
+                        data: GetFilterModel
+                    }
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            DADMasterId: { type: "number" },
+                            FundSource: { type: "string" },
+                            CommittedAmount: { type: "number" },
+                            DisbursedAmount: { type: "number" }
+                        }
+                    }
+                },
+                aggregate: [
+                                { field: "CommittedAmount", aggregate: "sum" },
+                                { field: "DisbursedAmount", aggregate: "sum" },
+                                { field: "ExpendedAmount", aggregate: "sum" }
+                           ],
+                pageSize: 10,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            },
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            detailTemplate: kendo.template($("#detailTemplate").html()),
+            detailInit: detailInit,
+            detailExpand: function () {
+                //console.log("grid detailExpand Event");
+                $("#grid tbody .detail thead").hide();
+                //$(".k-grid tbody .k-grid .k-grid-header").hide();
+            },
+            detailCollapse: function () {
+                //console.log("grid detailCollapse Event");
+            },
+            dataBound: function () {
+                //console.log("grid dataBound Event");
+                //this.expandRow(this.tbody.find("tr.k-master-row").first());
+            },
+            columns: [
+                        { field: "DADMasterId", title: "DADMasterId", hidden: true, filterable: false },
+                        { field: "FundSource", title: "Funding Source/Funding Agency/Project", footerTemplate: "Grand Total:", width: 250 },
+                        { field: "CommittedAmount", title: "Committed", format: "{0:n}", footerTemplate: "#= sum #", filterable: false, sortable: false, width: 150 },
+                        { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", footerTemplate: "#= sum #", filterable: false, sortable: false, width: 150 },
+                        { field: "ExpendedAmount", title: "Expended", format: "{0:n}", footerTemplate: "#= sum #", filterable: false, sortable: false, width: 150 }
+                     ]
+        }); //end of kendo grid
+
+        function detailInit(e) {
+
+            var detailRow = e.detailRow;
+
+            var masterId = e.data.DADMasterId;
+
+            detailRow.find(".detail").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/Home/DadDetailRead/" + masterId
+                        }
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false
+                },
+                scrollable: false,
+                sortable: false,
+                filterable: false,
+                pageable: false,
+                detailTemplate: kendo.template($("#detailItemTemplate").html()),
+                detailInit: detailItemInit,
+                detailExpand: function () {
+                    //console.log("detailGrid detailExpand Event");
+                    $("#grid tbody .detailItem thead").hide();
+                    //$("#grid tbody .detailItem .k-grid-header").hide();
+                    //$(".k-grid tbody .k-grid tbody .k-grid .k-grid-header").hide();
+                },
+                detailCollapse: function () {
+                    //console.log("detailGrid detailCollapse Event");
+                },
+                dataBound: function () {
+                    //console.log("detailGrid dataBound Event");
+                    //this.expandRow(this.tbody.find("tr.k-master-row").first());
+                },
+                columns: [
+                            { field: "DADDetailId", title: "DADDetailId", hidden: true },
+                            { field: "FundAgency", title: "Fund Agency", width: 200 },
+                            { field: "CommittedAmount", title: "Committed", format: "{0:n}", width: 130 },
+                            { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", width: 135 },
+                            { field: "ExpendedAmount", title: "Expended", format: "{0:n}", width: 135 }
+                        ]
+            });
+
+            //$("#grid tbody .detail .k-grid-header").hide();
+
+        } //end of detailInit
+
+        function detailItemInit(e) {
+
+            var detailRow = e.detailRow;
+
+            var detailId = e.data.DADDetailId;
+
+            detailRow.find(".detailItem").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/Home/DadDetailItemRead/" + detailId
+                        }
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false
+                },
+                scrollable: false,
+                sortable: false,
+                filterable: false,
+                pageable: false,
+                columns: [
+                            { field: "DADDetailItemId", title: "DADDetailItemId", hidden: true },
+                            { field: "Project", title: "Project", template: "<a href='/Home/Project/#= DADDetailItemId #' class='lnkProjectName'>#= Project #</a>", width: 222 },
+                            { field: "CommittedAmount", title: "Committed", format: "{0:n}", width: 150 },
+                            { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", width: 150 },
+                            { field: "ExpendedAmount", title: "Expended", format: "{0:n}", width: 150 }
+                        ]
+            });
+
+        } //end of detailItemInit
+
+        function onDetailCollapseForDetailGrid(e) {
+            $("#grid tbody .detail .k-grid-header").hide();
+        } //end onDetailCollapseForDetailGrid()
+
+        // Getting Filter Model
+        function GetFilterModel() {
+
+            var filterModel = {};
+            //filterModel.FundSource = "FundSource";
+            //filterModel.FundAgency = "FundAgency";
+            //filterModel.Project = "Project";
+            //filterModel.Sector = "Sector";
+            //filterModel.ProvinceOrArea = "ProvinceOrArea";
+            //filterModel.DistrictOrAgency = "DistrictOrAgency";
+            //filterModel.ReferenceNumber = "ReferenceNumber";
+            //filterModel.FiscalYear = "FiscalYear";
+
+            return filterModel;
+
+        } //end GetFilterModel()
+
+        $("#btnOk").click(function () {
+
+            var fundSource = $("#txtFundSource").val();
+            var fundAgency = $("#txtFundAgency").val();
+            var project = $("#txtProject").val();
+            var sector = $("#txtSector").val();
+            var provinceOrArea = $("#txtProvinceOrArea").val();
+            var districtOrAgency = $("#txtDistrictOrAgency").val();
+            var referenceNumber = $("#txtReferenceNumber").val();
+            var fiscalYear = $("#txtFiscalYear").val();
+
+            var filterModel = {};
+            filterModel.FundSource = fundSource;
+            filterModel.FundAgency = fundAgency;
+            filterModel.Project = project;
+            filterModel.Sector = sector;
+            filterModel.ProvinceOrArea = provinceOrArea;
+            filterModel.DistrictOrAgency = districtOrAgency;
+            filterModel.ReferenceNumber = referenceNumber;
+            filterModel.FiscalYear = fiscalYear;
+
+
+            var grid = $("#grid").data("kendoGrid");
+
+            grid.dataSource.transport.options.read.url = "/Home/DadDataListRead";
+            grid.dataSource.transport.options.read.data = filterModel;
+            grid.dataSource.read()
+
+            return false;
+
+        });
+
+        //-------------------------------------------------------
+        //start Filter - Dialog, Click Event
+
+        // Filter Success Function
+        function FilterSuccess() {
+            alert("FilterSuccess");
+            if ($("#updateTargetId").html() == "True") {
+
+                //now we can close the dialog
+                $('#filterDialog').dialog('close');
+                //twitter type notification
+                $('#commonMessage').html("Ok.");
+                $('#commonMessage').delay(400).slideDown(400).delay(3000).slideUp(400);
+                //Refresh Kendo Grid
+                //KendoGridRefresh();
+            }
+            else {
+                //show message in popup
+                $("#updateTargetId").show();
+            }
+        }
+        
+        $("#filterDialog").dialog({
+            autoOpen: false,
+            width: 600,
+            resizable: false,
+            modal: true,
+            buttons: {
+                "Ok": function () {
+                    //make sure there is nothing on the message before we continue 
+                    $("#updateTargetId").html('');
+                    $("#filterForm").submit();
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        //add Category
+        $('.lnkFilterDialog').live('click', function () {
+
+            //change the title of the dialog
+            var linkObj = $(this);
+            var dialogDiv = $('#filterDialog');
+            var viewUrl = linkObj.attr('href');
+
+            $.get(viewUrl, function (data) {
+                dialogDiv.html(data);
+                //validation
+                var $form = $("#filterForm");
+                // Unbind existing validation
+                $form.unbind();
+                $form.data("validator", null);
+                // Check document for changes
+                $.validator.unobtrusive.parse(document);
+                // Re add validation with changes
+                $form.validate($form.data("unobtrusiveValidation").options);
+                //open dialog
+                dialogDiv.dialog('open');
+            });
+            return false;
+
+        });
+
+        //end Filter - Dialog, Click Event
+        //-------------------------------------------------------
+    });
+
+</script>

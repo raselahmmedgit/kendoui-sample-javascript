@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<div id="indexPage">
+    <div id="grid">
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: "/Home/CategoryRead"
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            CategoryId: { type: "number" },
+                            Name: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 10,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            },
+            height: 250,
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            columns: [{
+                field: "CategoryId",
+                title: "Category ID",
+                width: 50,
+                filterable: false
+            },
+                             {
+                                 field: "Name",
+                                 title: "Category Name",
+                                 width: 250
+                             }]
+        }); //end of kendo grid
+
+    });
+
+</script>

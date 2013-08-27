@@ -1,0 +1,50 @@
+﻿@model RnD.KendoUISample.ViewModels.FilterViewModel
+@using (Ajax.BeginForm("FilterDialog", "KendoUI", null,
+        new AjaxOptions
+        {
+            UpdateTargetId = "updateTargetId",
+            InsertionMode = InsertionMode.Replace,
+            HttpMethod = "POST",
+            OnSuccess = "FilterSuccess",
+        }, new { @id = "filterForm" }))
+{
+    
+
+    <fieldset>
+        <legend>Filter:</legend>@Html.ValidationSummary(true)
+        <div id="updateTargetId" class="error invisible">
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.FundSource): </strong>@Html.EditorFor(model => model.FundSource)
+            @Html.ValidationMessageFor(model => model.FundSource)
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.FundAgency): </strong>@Html.EditorFor(model => model.FundAgency)
+            @Html.ValidationMessageFor(model => model.FundAgency)
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.Project): </strong>@Html.EditorFor(model => model.Project)
+            @Html.ValidationMessageFor(model => model.Project)
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.Sector): </strong>@Html.EditorFor(model => model.Sector)
+            @Html.ValidationMessageFor(model => model.Sector)
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.ProvinceOrArea): </strong>@Html.EditorFor(model => model.ProvinceOrArea)
+            @Html.ValidationMessageFor(model => model.ProvinceOrArea)
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.DistrictOrAgency): </strong>@Html.EditorFor(model => model.DistrictOrAgency)
+            @Html.ValidationMessageFor(model => model.DistrictOrAgency)
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.ReferenceNumber): </strong>@Html.EditorFor(model => model.ReferenceNumber)
+            @Html.ValidationMessageFor(model => model.ReferenceNumber)
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.FiscalYear): </strong>@Html.EditorFor(model => model.FiscalYear)
+            @Html.ValidationMessageFor(model => model.FiscalYear)
+        </div>
+    </fieldset>
+}

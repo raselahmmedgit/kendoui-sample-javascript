@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<div id="indexPage">
+    <div id="gridZone">
+        <div id="grid">
+        </div>
+    </div>
+</div>
+<script type="text/x-kendo-template" id="detailTemplate">
+
+<div class='detail'>
+</div>
+
+</script>
+<script type="text/x-kendo-template" id="detailItemTemplate">
+
+<div class='detailItem'>
+</div>
+
+</script>
+<script type="text/javascript">
+
+    // Getting Filter Model
+    function GetFilterModel() {
+
+        var filterModel = {};
+        filterModel.FundSource = "FundSource";
+        filterModel.FundAgency = "FundAgency";
+        filterModel.Project = "Project";
+        filterModel.Sector = "Sector";
+        filterModel.ProvinceOrArea = "ProvinceOrArea";
+        filterModel.DistrictOrAgency = "DistrictOrAgency";
+        filterModel.ReferenceNumber = "ReferenceNumber";
+        filterModel.FiscalYear = "FiscalYear";
+
+        return filterModel;
+
+    } //end GetFilterModel()
+
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Demo/GridMasterRead",
+                        data: GetFilterModel
+                    }
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            Id: { type: "number" },
+                            Name: { type: "string" },
+                            CommittedAmount: { type: "number" },
+                            DisbursedAmount: { type: "number" },
+                            ExpendedAmount: { type: "number" },
+                            AId: { type: "number" },
+                            AName: { type: "string" },
+                            BId: { type: "number" },
+                            BName: { type: "string" },
+                            CId: { type: "number" },
+                            CName: { type: "string" },
+                            DId: { type: "number" },
+                            DName: { type: "string" },
+                            EId: { type: "number" },
+                            EName: { type: "string" }
+                        }
+                    }
+                },
+                aggregate: [
+                                { field: "CommittedAmount", aggregate: "sum" },
+                                { field: "DisbursedAmount", aggregate: "sum" },
+                                { field: "ExpendedAmount", aggregate: "sum" }
+                           ],
+                pageSize: 10,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            },
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            columnMenu: true,
+            resizable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            detailTemplate: kendo.template($("#detailTemplate").html()),
+            detailInit: detailInit,
+            detailExpand: function () {
+                $("#grid tbody .detail thead").hide();
+            },
+            columns: [
+                        { field: "Id", title: "Id",  filterable: false, "menu": false },
+                        { field: "Name", title: "Funding Source/Funding Agency/Project", footerTemplate: "Grand Total:", width: 250 },
+                        { field: "CommittedAmount", title: "Committed", format: "{0:n}", footerTemplate: "#= kendo.toString(sum, 'n2') #", filterable: false, sortable: false, width: 150 },
+                        { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", footerTemplate: "#= kendo.toString(sum, 'n2') #", filterable: false, sortable: false, width: 150 },
+                        { field: "ExpendedAmount", title: "Expended", format: "{0:n}", footerTemplate: "#= kendo.toString(sum, 'n2') #", filterable: false, sortable: false, width: 150 },
+                        { field: "AId", title: "AId", hidden: true, filterable: false, "menu": false },
+                        { field: "AName", title: "AName", hidden: true, filterable: false },
+                        { field: "BId", title: "BId", hidden: true, filterable: false, "menu": false },
+                        { field: "BName", title: "BName", hidden: true, filterable: false },
+                        { field: "CId", title: "CId", hidden: true, filterable: false, "menu": false },
+                        { field: "CName", title: "CName", hidden: true, filterable: false },
+                        { field: "DId", title: "DId", hidden: true, filterable: false, "menu": false },
+                        { field: "DName", title: "DName", hidden: true, filterable: false },
+                        { field: "EId", title: "EId", hidden: true, filterable: false, "menu": false },
+                        { field: "EName", title: "EName", hidden: true, filterable: false }
+                     ]
+        }); //end of kendo grid
+
+        function detailInit(e) {
+
+            var detailRow = e.detailRow;
+
+            var masterId = e.data.AId;
+
+            detailRow.find(".detail").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/Demo/GridDetailRead/" + masterId
+                        }
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false
+                },
+                scrollable: false,
+                sortable: false,
+                filterable: false,
+                pageable: false,
+                detailTemplate: kendo.template($("#detailItemTemplate").html()),
+                detailInit: detailItemInit,
+                detailExpand: function () {
+                    $("#grid tbody .detailItem thead").hide();
+                },
+                columns: [
+                            { field: "Id", title: "Id", hidden: true },
+                            { field: "Name", title: "Fund Agency", width: 200 },
+                            { field: "CommittedAmount", title: "Committed", format: "{0:n}", width: 130 },
+                            { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", width: 135 },
+                            { field: "ExpendedAmount", title: "Expended", format: "{0:n}", width: 135 },
+                            { field: "AId", title: "AId", hidden: true, filterable: false },
+                            { field: "AName", title: "AName", hidden: true, filterable: false },
+                            { field: "BId", title: "BId", hidden: true, filterable: false },
+                            { field: "BName", title: "BName", hidden: true, filterable: false },
+                            { field: "CId", title: "CId", hidden: true, filterable: false },
+                            { field: "CName", title: "CName", hidden: true, filterable: false },
+                            { field: "DId", title: "DId", hidden: true, filterable: false },
+                            { field: "DName", title: "DName", hidden: true, filterable: false },
+                            { field: "EId", title: "EId", hidden: true, filterable: false },
+                            { field: "EName", title: "EName", hidden: true, filterable: false }
+                        ]
+            });
+
+        } //end of detailInit
+
+        function detailItemInit(e) {
+
+            var detailRow = e.detailRow;
+
+            var detailId = e.data.BId;
+
+            detailRow.find(".detailItem").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/Demo/GridDetailItemRead/" + detailId
+                        }
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false
+                },
+                scrollable: false,
+                sortable: false,
+                filterable: false,
+                pageable: false,
+                columns: [
+                            { field: "Id", title: "Id", hidden: true },
+                            { field: "Name", title: "Project", template: "<a href='/Home/Project/#= Id #' class='lnkName'>#= Name #</a>", width: 222 },
+                            { field: "CommittedAmount", title: "Committed", format: "{0:n}", width: 150 },
+                            { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", width: 150 },
+                            { field: "ExpendedAmount", title: "Expended", format: "{0:n}", width: 150 },
+                            { field: "AId", title: "AId", hidden: true, filterable: false },
+                            { field: "AName", title: "AName", hidden: true, filterable: false },
+                            { field: "BId", title: "BId", hidden: true, filterable: false },
+                            { field: "BName", title: "BName", hidden: true, filterable: false },
+                            { field: "CId", title: "CId", hidden: true, filterable: false },
+                            { field: "CName", title: "CName", hidden: true, filterable: false },
+                            { field: "DId", title: "DId", hidden: true, filterable: false },
+                            { field: "DName", title: "DName", hidden: true, filterable: false },
+                            { field: "EId", title: "EId", hidden: true, filterable: false },
+                            { field: "EName", title: "EName", hidden: true, filterable: false }
+                        ]
+            });
+
+        } //end of detailItemInit
+
+    });
+
+</script>

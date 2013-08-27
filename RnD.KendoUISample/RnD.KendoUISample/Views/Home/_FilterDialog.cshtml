@@ -1,0 +1,22 @@
+﻿@model RnD.KendoUISample.ViewModels.FilterViewModel
+@using (Ajax.BeginForm("FilterDialog", "Home", null,
+        new AjaxOptions
+        {
+            UpdateTargetId = "updateTargetId",
+            InsertionMode = InsertionMode.Replace,
+            HttpMethod = "POST",
+            OnSuccess = "FilterSuccess",
+        }, new { @id = "filterForm" }))
+{
+    
+
+    <fieldset>
+        <legend>Filter:</legend>@Html.ValidationSummary(true)
+        <div id="updateTargetId" class="error invisible">
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.FiscalYear): </strong>@Html.EditorFor(model => model.FiscalYear)
+            @Html.ValidationMessageFor(model => model.FiscalYear)
+        </div>
+    </fieldset>
+}

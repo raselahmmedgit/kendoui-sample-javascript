@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<div id="indexPage">
+    <div id="tabstrip">
+        <ul>
+            <li class="k-state-active">Dimensions &amp; Weights</li>
+            <li>Engine</li>
+            <li>Chassis</li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#tabstrip").kendoTabStrip({
+            animation: { open: { effects: "fadeIn"} },
+            contentUrls: [
+                        '/Tab/TabOne',
+                        '/Tab/TabTwo',
+                        '/Tab/TabThree'
+                    ]
+        });
+
+    });
+
+</script>

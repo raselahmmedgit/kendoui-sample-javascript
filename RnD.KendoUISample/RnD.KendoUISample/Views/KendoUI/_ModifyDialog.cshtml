@@ -1,0 +1,23 @@
+﻿@model RnD.KendoUISample.ViewModels.GridModifyViewModel
+<fieldset>
+    <div class="editor-field">
+        <strong>@Html.LabelFor(model => model.FieldOne): </strong>@Html.EditorFor(model => model.FieldOne)
+        @Html.ValidationMessageFor(model => model.FieldOne)
+    </div>
+    <div class="editor-field">
+        <strong>@Html.LabelFor(model => model.FieldTwo): </strong>@Html.EditorFor(model => model.FieldTwo)
+        @Html.ValidationMessageFor(model => model.FieldTwo)
+    </div>
+    <div class="editor-field">
+        <strong>@Html.LabelFor(model => model.FieldThree): </strong>@Html.EditorFor(model => model.FieldThree)
+        @Html.ValidationMessageFor(model => model.FieldThree)
+    </div>
+    <div class="editor-field">
+        <strong>@Html.LabelFor(model => model.FieldFour): </strong>@Html.EditorFor(model => model.FieldFour)
+        @Html.ValidationMessageFor(model => model.FieldFour)
+    </div>
+    <div class="editor-field">
+        <strong>@Html.LabelFor(model => model.FieldFive): </strong>@Html.EditorFor(model => model.FieldFive)
+        @Html.ValidationMessageFor(model => model.FieldFive)
+    </div>
+</fieldset>

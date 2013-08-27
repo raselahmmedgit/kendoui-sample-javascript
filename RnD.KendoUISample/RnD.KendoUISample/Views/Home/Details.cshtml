@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "Details Page";
+}
+<div id="indexPage">
+    <div id="grid">
+    </div>
+</div>
+<script type="text/x-kendo-template" id="detailsTemplate">
+
+<div class='productDetails'>
+</div>
+
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: "/Home/CategoryDetailsRead"
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            CategoryId: { type: "number" },
+                            Name: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 10,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            },
+            height: 250,
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            detailTemplate: kendo.template($("#detailsTemplate").html()),
+            detailInit: detailInit,
+            dataBound: function () {
+                this.expandRow(this.tbody.find("tr.k-master-row").first());
+            },
+            columns: [{
+                field: "CategoryId",
+                title: "ID",
+                width: 50,
+                filterable: false
+            },
+                             {
+                                 field: "Name",
+                                 title: "Name",
+                                 width: 260
+                             }]
+        }); //end of kendo grid
+
+        function detailInit(e) {
+
+            var detailRow = e.detailRow;
+
+            var categoryId = e.data.CategoryId;
+
+            detailRow.find(".productDetails").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/Home/GetProducts/" + categoryId
+                        }
+                    },
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false,
+                    pageSize: 5
+                },
+                scrollable: false,
+                sortable: true,
+                pageable: true,
+                columns: [
+                            { field: "ProductId", title: "ID", width: "50px" },
+                            { field: "Name", title: "Name", width: "100px" },
+                            { field: "Price", title: "Price", width: "100px" }
+                        ]
+            });
+
+
+        } //end of detailInit
+    });
+
+</script>

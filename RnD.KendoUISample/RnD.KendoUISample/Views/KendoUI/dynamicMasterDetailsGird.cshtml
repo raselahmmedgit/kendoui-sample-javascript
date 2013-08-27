@@ -1,0 +1,481 @@
+﻿@{
+    ViewBag.Title = "Dynamic Master Details Gird";
+}
+<script type="text/javascript">
+
+    // Getting Filter Model
+    function GetFilterModel() {
+
+        var filterModel = {};
+        //filterModel.FundSource = "FundSource";
+        //filterModel.FundAgency = "FundAgency";
+        //filterModel.Project = "Project";
+        //filterModel.Sector = "Sector";
+        //filterModel.ProvinceOrArea = "ProvinceOrArea";
+        //filterModel.DistrictOrAgency = "DistrictOrAgency";
+        //filterModel.ReferenceNumber = "ReferenceNumber";
+        //filterModel.FiscalYear = "FiscalYear";
+
+        return filterModel;
+
+    } //end GetFilterModel()
+
+    var gridModifyViewModel = {};
+    gridModifyViewModel.FieldOne = "one";
+    gridModifyViewModel.FieldTwo = "two";
+    gridModifyViewModel.FieldThree = "three";
+    gridModifyViewModel.FieldFour = "four";
+    gridModifyViewModel.FieldFive = "five";
+
+    $(document).ready(function () {
+
+
+        //-------------------------------------------------------
+        //start Modify Current - Dialog, Click Event
+
+        // Modify Success Function
+        function ModifySuccess() {
+            alert("ModifySuccess");
+            if ($("#updateTargetId").html() == "True") {
+
+                //now we can close the dialog
+                $('#gridModifyDialog').dialog('close');
+                //twitter type notification
+                $('#commonMessage').html("Ok.");
+                $('#commonMessage').delay(400).slideDown(400).delay(3000).slideUp(400);
+                //Refresh Kendo Grid
+                //KendoGridRefresh();
+            }
+            else {
+                //show message in popup
+                $("#updateTargetId").show();
+            }
+        }
+
+        $("#gridModifyDialog").dialog({
+            autoOpen: false,
+            width: 600,
+            resizable: false,
+            modal: true,
+            buttons: {
+                "Ok": function () {
+                    PostModifyCurrentView();
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        //
+        $("#btnModifyGrid").click(function () {
+
+            var dialogDiv = $('#gridModifyDialog');
+            var viewUrl = '/KendoUI/ModifyDialog';
+            $.get(viewUrl, function (data) {
+                dialogDiv.html(data);
+                dialogDiv.dialog('open');
+            });
+            return false;
+
+        });
+
+        //end Modify Current - Dialog, Click Event
+        //-------------------------------------------------------
+
+
+        //-------------------------------------------------------
+        //start Filter - Dialog, Click Event
+
+        // Filter Success Function
+        function FilterSuccess() {
+            alert("FilterSuccess");
+            if ($("#updateTargetId").html() == "True") {
+
+                //now we can close the dialog
+                $('#filterDialog').dialog('close');
+                //twitter type notification
+                $('#commonMessage').html("Ok.");
+                $('#commonMessage').delay(400).slideDown(400).delay(3000).slideUp(400);
+                //Refresh Kendo Grid
+                //KendoGridRefresh();
+            }
+            else {
+                //show message in popup
+                $("#updateTargetId").show();
+            }
+        }
+
+        $("#gridFilterDialog").dialog({
+            autoOpen: false,
+            width: 600,
+            resizable: false,
+            modal: true,
+            buttons: {
+                "Ok": function () {
+                    //make sure there is nothing on the message before we continue 
+                    $("#updateTargetId").html('');
+                    $("#filterForm").submit();
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        //
+        $('.lnkFilterDialog').live('click', function () {
+
+            //change the title of the dialog
+            var linkObj = $(this);
+            var dialogDiv = $('#gridFilterDialog');
+            var viewUrl = linkObj.attr('href');
+
+            $.get(viewUrl, function (data) {
+                dialogDiv.html(data);
+                //validation
+                var $form = $("#filterForm");
+                // Unbind existing validation
+                $form.unbind();
+                $form.data("validator", null);
+                // Check document for changes
+                $.validator.unobtrusive.parse(document);
+                // Re add validation with changes
+                $form.validate($form.data("unobtrusiveValidation").options);
+                //open dialog
+                dialogDiv.dialog('open');
+            });
+            return false;
+
+        });
+
+        //end Filter - Dialog, Click Event
+        //-------------------------------------------------------
+
+        //$('#grid').kendoGrid({ dataSource: { transport: { read: '/Home/CategoryRead' }, schema: { model: { fields: { CategoryId: { type: 'number' }, Name: { type: 'string'}}} }, pageSize: 10, serverPaging: false, serverFiltering: false, serverSorting: false }, height: 250, filterable: true, groupable: true, sortable: true, pageable: { refresh: true, pageSizes: true }, columns: [{ field: 'CategoryId', title: 'Category ID', width: 50, filterable: false }, { field: 'Name', title: 'Category Name', width: 250}] });
+
+        //$('#grid').kendoGrid({ dataSource: { transport: { read: '/Home/CategoryRead' }, schema: { model: { fields: { CategoryId: { type: 'number' }, Name: { type: 'string'}}} }, pageSize: 10, serverPaging: false, serverFiltering: false, serverSorting: false }, height: 250, filterable: true, groupable: true, sortable: true, pageable: { refresh: true, pageSizes: true }, columns: [{ field: 'CategoryId', title: 'Category ID', width: 50, filterable: false }, { field: 'Name', title: 'Category Name', width: 250}] });
+
+        function PostModifyCurrentView() {
+
+            //$('#gridInstantZone').html('');
+            $('#gridZone').html('');
+            $('#gridZone').append("<div id='grid'></div>");
+
+            var paramValue = JSON.stringify({ model: gridModifyViewModel });
+
+            $.ajax({
+                url: "/KendoUI/dynamicMasterDetailsGirdAjax",
+                type: 'POST',
+                dataType: 'html',
+                data: paramValue,
+                contentType: 'application/json; charset=utf-8',
+                success: function (dataScript) {
+
+                    console.log("success");
+
+                    //gridScriptZone
+                    //$('head').append(dataScript);
+                    $('#gridScriptZone').html('');
+                    $('#gridScriptZone').append(dataScript);
+
+                    console.log(dataScript);
+
+                    console.log("Ok.");
+
+                    //now we can close the dialog
+                    $('#gridModifyDialog').dialog('close');
+
+
+                },
+                error: function (objAjaxRequest, strError) {
+                    var respText = objAjaxRequest.responseText;
+
+                    console.log("error");
+
+                    console.log(respText);
+
+                    console.log("Ok.");
+                }
+
+            });
+
+            return false;
+
+        }
+
+        //        $("#btnModifyGrid").click(function () {
+
+        //            //$('#gridInstantZone').html('');
+        //            $('#gridZone').html('');
+        //            $('#gridZone').append("<div id='grid'></div>");
+
+        //            var paramValue = JSON.stringify({ model: gridModifyViewModel });
+
+        //            $.ajax({
+        //                url: "/KendoUI/dynamicMasterDetailsGirdAjax",
+        //                type: 'POST',
+        //                dataType: 'html',
+        //                data: paramValue,
+        //                contentType: 'application/json; charset=utf-8',
+        //                success: function (dataScript) {
+
+        //                    console.log("success");
+
+        //                    //gridScriptZone
+        //                    //$('head').append(dataScript);
+        //                    $('#gridScriptZone').html('');
+        //                    $('#gridScriptZone').append(dataScript);
+
+        //                    console.log(dataScript);
+
+        //                    console.log("Ok.");
+
+        //                },
+        //                error: function (objAjaxRequest, strError) {
+        //                    var respText = objAjaxRequest.responseText;
+
+        //                    console.log("error");
+
+        //                    console.log(respText);
+
+        //                    console.log("Ok.");
+        //                }
+
+        //            });
+
+        //            return false;
+
+        //        });
+
+    });
+
+</script>
+<div id="indexPage">
+    <div id="gridModifyZone">
+        <button id="btnModifyGrid">
+            Modify Current View</button>
+    </div>
+    <div id="gridZone">
+        <div id="grid">
+        </div>
+    </div>
+    <div id="gridFilterZone">
+        <ul>
+            <li><a id="lnkFundSource" class="lnkFilterDialog" href="/KendoUI/FilterDialog/1">Fund
+                Source</a></li>
+            <li><a id="lnkFundAgency" class="lnkFilterDialog" href="/KendoUI/FilterDialog/2">Fund
+                Agency</a></li>
+            <li><a id="lnkProject" class="lnkFilterDialog" href="/KendoUI/FilterDialog/3">Project</a></li>
+            <li><a id="lnkSector" class="lnkFilterDialog" href="/KendoUI/FilterDialog/4">Sector</a></li>
+            <li><a id="lnkProvinceOrArea" class="lnkFilterDialog" href="/KendoUI/FilterDialog/5">
+                Province Or Area</a></li>
+            <li><a id="lnkDistrictOrAgency" class="lnkFilterDialog" href="/KendoUI/FilterDialog/6">
+                District Or Agency</a></li>
+            <li><a id="lnkReferenceNumber" class="lnkFilterDialog" href="/KendoUI/FilterDialog/7">
+                Reference Number</a></li>
+            <li><a id="lnkFiscalYear" class="lnkFilterDialog" href="/KendoUI/FilterDialog/8">Fiscal
+                Year</a></li>
+        </ul>
+    </div>
+    <div id="gridFiterPopUp">
+        <div id="gridFilterDialog" title="Filter">
+        </div>
+    </div>
+    <div id="gridModifyPopUp">
+        <div id="gridModifyDialog" title="Modify Current View">
+        </div>
+    </div>
+    <div id="gridTemplateScriptZone">
+        <script type="text/x-kendo-template" id="detailOneTemplate">
+
+        <div class='detailOne'>
+        </div>
+
+        </script>
+        <script type="text/x-kendo-template" id="detailTwoTemplate">
+
+        <div class='detailTwo'>
+        </div>
+
+        </script>
+        <script type="text/x-kendo-template" id="detailThreeTemplate">
+
+        <div class='detailThree'>
+        </div>
+
+        </script>
+        <script type="text/x-kendo-template" id="detailFourTemplate">
+
+        <div class='detailFour'>
+        </div>
+
+        </script>
+        <script type="text/x-kendo-template" id="detailFiveTemplate">
+
+        <div class='detailFive'>
+        </div>
+
+        </script>
+        <script type="text/x-kendo-template" id="detailSixTemplate">
+
+        <div class='detailSix'>
+        </div>
+
+        </script>
+        <script type="text/x-kendo-template" id="detailSevenTemplate">
+
+        <div class='detailSeven'>
+        </div>
+
+        </script>
+    </div>
+    <div id="gridScriptZone">
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                $("#grid").kendoGrid({
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "/KendoUI/DadMasterRead",
+                                data: GetFilterModel
+                            }
+                        },
+                        schema: {
+                            model: {
+                                fields: {
+                                    Ok_ModelId: { type: "number" },
+                                    Ok_Name: { type: "string" },
+                                    CommittedAmount: { type: "number" },
+                                    DisbursedAmount: { type: "number" },
+                                    ExpendedAmount: { type: "number" },
+                                    A_ModelId: { type: "number" },
+                                    B_ModelId: { type: "number" },
+                                    C_ModelId: { type: "number" },
+                                    D_ModelId: { type: "number" },
+                                    E_ModelId: { type: "number" }
+                                }
+                            }
+                        },
+                        aggregate: [
+                                { field: "CommittedAmount", aggregate: "sum" },
+                                { field: "DisbursedAmount", aggregate: "sum" },
+                                { field: "ExpendedAmount", aggregate: "sum" }
+                           ],
+                        pageSize: 10,
+                        serverPaging: false,
+                        serverFiltering: false,
+                        serverSorting: false
+                    },
+                    filterable: true,
+                    groupable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true
+                    },
+                    detailTemplate: kendo.template($("#detailOneTemplate").html()),
+                    detailInit: detailOneInit,
+                    detailExpand: function () {
+                        $("#grid tbody .detailOne thead").hide();
+                    },
+                    columns: [
+                        { field: "Ok_ModelId", title: "Ok_ModelId", hidden: true, filterable: false },
+                        { field: "Ok_Name", title: "Funding Source/Funding Agency/Project", footerTemplate: "Grand Total:", width: 250 },
+                        { field: "CommittedAmount", title: "Committed", format: "{0:n}", footerTemplate: "#= sum #", filterable: false, sortable: false, width: 150 },
+                        { field: "DisbursedAmount", title: "Disbursed", format: "{0:n}", footerTemplate: "#= sum #", filterable: false, sortable: false, width: 150 },
+                        { field: "ExpendedAmount", title: "Expended", format: "{0:n}", footerTemplate: "#= sum #", filterable: false, sortable: false, width: 150 },
+                        { field: "A_ModelId", title: "A_ModelId", hidden: true, filterable: false },
+                        { field: "B_ModelId", title: "B_ModelId", hidden: true, filterable: false },
+                        { field: "C_ModelId", title: "C_ModelId", hidden: true, filterable: false },
+                        { field: "D_ModelId", title: "D_ModelId", hidden: true, filterable: false },
+                        { field: "E_ModelId", title: "E_ModelId", hidden: true, filterable: false }
+                     ]
+                });
+
+                function detailOneInit(e) {
+
+                    var detailRow = e.detailRow;
+
+                    var masterId = e.data.Ok_ModelId;
+
+                    detailRow.find(".detailOne").kendoGrid({
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "/KendoUI/DadDetailOneRead/" + masterId
+                                }
+                            },
+                            serverPaging: false,
+                            serverSorting: false,
+                            serverFiltering: false
+                        },
+                        scrollable: false,
+                        sortable: false,
+                        filterable: false,
+                        pageable: false,
+                        detailTemplate: kendo.template($("#detailTwoTemplate").html()),
+                        detailInit: detailTwoInit,
+                        detailExpand: function () {
+                            $("#grid tbody .detailTwo thead").hide();
+                        },
+                        columns: [
+                            { field: "Ok_ModelId", title: "", hidden: true },
+                            { field: "Ok_Name", title: "", width: 200 },
+                            { field: "CommittedAmount", title: "", format: "{0:n}", width: 130 },
+                            { field: "DisbursedAmount", title: "", format: "{0:n}", width: 135 },
+                            { field: "ExpendedAmount", title: "", format: "{0:n}", width: 135 },
+                            { field: "A_ModelId", title: "", hidden: true },
+                            { field: "B_ModelId", title: "", hidden: true },
+                            { field: "C_ModelId", title: "", hidden: true },
+                            { field: "D_ModelId", title: "", hidden: true },
+                            { field: "E_ModelId", title: "", hidden: true }
+                        ]
+                    });
+
+                }
+
+                function detailTwoInit(e) {
+
+                    var detailRow = e.detailRow;
+
+                    var detailId = e.data.Ok_ModelId;
+
+                    detailRow.find(".detailTwo").kendoGrid({
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "/KendoUI/DadDetailTwoRead/" + detailId
+                                }
+                            },
+                            serverPaging: false,
+                            serverSorting: false,
+                            serverFiltering: false
+                        },
+                        scrollable: false,
+                        sortable: false,
+                        filterable: false,
+                        pageable: false,
+                        columns: [
+                            { field: "Ok_ModelId", title: "", hidden: true },
+                            { field: "Ok_Name", title: "", template: "<a href='/Home/Project/#= Ok_ModelId #' class='lnkProjectName'>#= Ok_Name #</a>", width: 222 },
+                            { field: "CommittedAmount", title: "", format: "{0:n}", width: 150 },
+                            { field: "DisbursedAmount", title: "", format: "{0:n}", width: 150 },
+                            { field: "ExpendedAmount", title: "", format: "{0:n}", width: 150 },
+                            { field: "A_ModelId", title: "", hidden: true },
+                            { field: "B_ModelId", title: "", hidden: true },
+                            { field: "C_ModelId", title: "", hidden: true },
+                            { field: "D_ModelId", title: "", hidden: true },
+                            { field: "E_ModelId", title: "", hidden: true }
+                        ]
+                    });
+
+                }
+
+            });
+
+        </script>
+    </div>
+</div>
