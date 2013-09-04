@@ -30,7 +30,58 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        //ServerPaging
+        public ActionResult ServerPaging()
+        {
+            return View();
+        }
+
+        //ServerFiltering
+        public ActionResult ServerFiltering()
+        {
+            return View();
+        }
+
+        //ServerSorting
+        public ActionResult ServerSorting()
+        {
+            return View();
+        }
+
         public JsonResult CategoryRead(KendoUiGridParamViewModel request)
+        {
+            var categories = GetCategories();
+            //List<Category> models = GetCategories();
+
+            //var models = GetCategories();
+            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult PagingCategoryRead(KendoUiGridParamViewModel request)
+        {
+            var categories = GetCategories();
+            //List<Category> models = GetCategories();
+
+            //var models = GetCategories();
+            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult FilteringCategoryRead(KendoUiGridParamViewModel request)
+        {
+            var categories = GetCategories();
+            //List<Category> models = GetCategories();
+
+            //var models = GetCategories();
+            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult SortingCategoryRead(KendoUiGridParamViewModel request)
         {
             var categories = GetCategories();
             //List<Category> models = GetCategories();

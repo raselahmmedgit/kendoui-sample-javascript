@@ -19,6 +19,11 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        public ActionResult Basic()
+        {
+            return View();
+        }
+
         public ActionResult Details()
         {
             return View();

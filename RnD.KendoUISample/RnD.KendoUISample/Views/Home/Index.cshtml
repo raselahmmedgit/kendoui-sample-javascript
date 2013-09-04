@@ -1,53 +1,115 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-<div id="indexPage">
-    <div id="grid">
+<div id="indexPage" style="width: 100%; display: inline-block;">
+    <div style="float: left; width: 50%; display: inline-block;">
+        <div>
+            <h2>
+                Basic Grid Sample</h2>
+            <p>
+                <a href="/Home/Basic" class="button">Basic Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Master Details Basic Grid Sample</h2>
+            <p>
+                <a href="/Home/Details" class="button">Master Details Basic Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                dadPak Type Grid Sample</h2>
+            <p>
+                <a href="/Home/dadIndex" id="" class="button">dadPak Type Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                dadPak Type Filter Grid Sample</h2>
+            <p>
+                <a href="/Home/dadFilter" id="" class="button">dadPak Type Filter Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Modify Grid Script Sample</h2>
+            <p>
+                <a href="/KendoUI/Index" id="" class="button">Modify Grid Script</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Dynamic Gird Sample</h2>
+            <p>
+                <a href="/KendoUI/dynamicGird" id="" class="button">Dynamic Gird</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Dynamic Master Details Gird Sample</h2>
+            <p>
+                <a href="/KendoUI/dynamicMasterDetailsGird" id="" class="button">Dynamic Master Details
+                    Gird</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Almost Final Grid Sample</h2>
+            <p>
+                <a href="/Demo/Final" id="" class="button">Almost Final Grid</a>
+            </p>
+        </div>
+    </div>
+    <div style="float: right; width: 50%; display: inline-block;">
+        <div>
+            <h2>
+                Custom Pagination Grid Sample</h2>
+            <p>
+                <a href="/Demo/CustomPagination" id="" class="button">Custom Pagination Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Server Paging Grid Sample</h2>
+            <p>
+                <a href="/Demo/ServerPaging" id="" class="button">Server Paging Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Server Filtering Sample</h2>
+            <p>
+                <a href="/Demo/ServerFiltering" id="" class="button">Server Filtering Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Server Sorting Sample</h2>
+            <p>
+                <a href="/Demo/ServerSorting" id="" class="button">Server Sorting Grid</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Basic Tab Sample</h2>
+            <p>
+                <a href="/Tab/Index" id="" class="button">Basic Tab</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Sample</h2>
+            <p>
+                <a href="#" id="" class="button">Click</a>
+            </p>
+        </div>
+        <div>
+            <h2>
+                Sample</h2>
+            <p>
+                <a href="#" id="" class="button">Click</a>
+            </p>
+        </div>
     </div>
 </div>
-<script type="text/javascript">
-
-    $(document).ready(function () {
-
-        $("#grid").kendoGrid({
-            dataSource: {
-                transport: {
-                    read: "/Home/CategoryRead"
-                },
-                schema: {
-                    model: {
-                        fields: {
-                            CategoryId: { type: "number" },
-                            Name: { type: "string" }
-                        }
-                    }
-                },
-                pageSize: 10,
-                serverPaging: false,
-                serverFiltering: false,
-                serverSorting: false
-            },
-            height: 250,
-            filterable: true,
-            groupable: true,
-            sortable: true,
-            pageable: {
-                refresh: true,
-                pageSizes: true
-            },
-            columns: [{
-                field: "CategoryId",
-                title: "Category ID",
-                width: 50,
-                filterable: false
-            },
-                             {
-                                 field: "Name",
-                                 title: "Category Name",
-                                 width: 250
-                             }]
-        }); //end of kendo grid
-
-    });
-
-</script>
