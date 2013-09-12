@@ -113,3 +113,25 @@
         </div>
     </div>
 </div>
+<ul id="ulTest">
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+</ul>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        //var index = $("#ulTest ul li").eq(1).css({ 'color': 'red' });
+        var index = $("ul#ulTest li").eq(0).hide();
+        var index2 = $("ul#ulTest li").eq(1).css({ 'color': 'red' });
+
+        var index3 = $("ul#ulTest li").eq().index();
+
+        console.log(index2);
+        console.log(index3);
+
+    });
+
+</script>

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using RnD.KendoUISample.ViewModels;
 using RnD.KendoUISample.Models;
+using RnD.KendoUISample.Helpers;
 
 namespace RnD.KendoUISample.Controllers
 {
@@ -58,6 +59,31 @@ namespace RnD.KendoUISample.Controllers
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult CategoryReadWithParam(KendoGridPost request)
+        {
+            var categories = GetCategories().AsQueryable();
+            //List<Category> models = GetCategories();
+
+            //var models = GetCategories();
+            var models = KendoUiHelper.ParseGridData<Category>(categories, request);
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+            //return Json(models);
+        }
+
+        public JsonResult CategoryReadWithParamForFilter(KendoGridPost request)
+        {
+            var categories = GetCategories().AsQueryable();
+            //List<Category> models = GetCategories();
+
+            //var models = GetCategories();
+            var models = KendoUiHelper.ParseGridData<Category>(categories, request);
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+            //return Json(models);
+        }
+
 
         public JsonResult PagingCategoryRead(KendoUiGridParamViewModel request)
         {

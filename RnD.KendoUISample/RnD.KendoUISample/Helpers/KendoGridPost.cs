@@ -20,7 +20,7 @@ namespace RnD.KendoUISample.Helpers
                 this.SortOrd = curRequest["sort[0][dir]"];
                 this.SortOn = curRequest["sort[0][field]"];
 
-                this.Export = curRequest["export"];
+                //this.Export = curRequest["export"];
             }
         }
 
@@ -31,6 +31,6 @@ namespace RnD.KendoUISample.Helpers
         public string SortOrd { get; set; }
         public string SortOn { get; set; }
 
-        public string Export { get; set; }
+        //public string Export { get; set; }
     }
 }

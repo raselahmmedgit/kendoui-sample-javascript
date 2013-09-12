@@ -48,16 +48,17 @@ namespace RnD.KendoUISample.Helpers
 
             return new KendoGridResult<T>
             {
-                Items = gridData,
-                TotalCount = collection.Count()
+                Data = gridData,
+                Total = collection.Count()
             };
         }
-
-
+        
         public class KendoGridResult<T>
         {
-            public IEnumerable<T> Items { get; set; }
-            public int TotalCount { get; set; }
+            public IEnumerable<T> AggregateResults { get; set; }
+            public IEnumerable<T> Data { get; set; }
+            public IEnumerable<T> Errors { get; set; }
+            public int Total { get; set; }
         }
     }
 }

@@ -2,7 +2,16 @@
     ViewBag.Title = "Custom Pagination";
 }
 <div id="indexPage">
+    <h2>
+        Kendo UI Grid Simple Server Paging
+    </h2>
     <div id="grid">
+    </div>
+    <br />
+    <h2>
+        Kendo UI Grid Server Paging, Sorting
+    </h2>
+    <div id="gridWithParam">
     </div>
 </div>
 <script type="text/javascript">
@@ -51,6 +60,56 @@
                                  width: 250
                              }]
         }); //end of kendo grid
+
+        $("#gridWithParam").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: "/Demo/CategoryReadWithParam"
+                },
+                schema: {
+                    data: function (data) {
+                        return data.Data;
+                    },
+                    model: {
+                        fields: {
+                            CategoryId: { type: "number" },
+                            Name: { type: "string" }
+                        }
+                    },
+                    total: function (data) {
+                        return data.Total;
+                    }
+                },
+                pageSize: 5,
+                serverPaging: true,
+                serverFiltering: false,
+                serverSorting: true
+            },
+            height: 250,
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                input: true,
+                numeric: true,
+                info: true,
+                previousNext: true,
+                refresh: true,
+                pageSizes: true
+            },
+            columns: [{
+                field: "CategoryId",
+                title: "Category ID",
+                width: 50,
+                filterable: false
+            },
+                             {
+                                 field: "Name",
+                                 title: "Category Name",
+                                 width: 250
+                             }]
+        }); //end of kendo grid
+
 
     });
 

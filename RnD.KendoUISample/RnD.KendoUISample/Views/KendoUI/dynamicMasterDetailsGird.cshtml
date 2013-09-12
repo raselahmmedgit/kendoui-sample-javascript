@@ -27,6 +27,26 @@
     gridModifyViewModel.FieldFour = "four";
     gridModifyViewModel.FieldFive = "five";
 
+    // Filter Success Function
+    function FilterSuccess() {
+        alert("FilterSuccess");
+        if ($("#updateTargetId").html() == "True") {
+
+            //now we can close the dialog
+            $('#filterDialog').dialog('close');
+            //twitter type notification
+            $('#commonMessage').html("Ok.");
+            $('#commonMessage').delay(400).slideDown(400).delay(3000).slideUp(400);
+            //Refresh Kendo Grid
+            //KendoGridRefresh();
+        }
+        else {
+            //show message in popup
+            $("#updateTargetId").show();
+        }
+    }
+
+
     $(document).ready(function () {
 
 
@@ -87,25 +107,7 @@
         //-------------------------------------------------------
         //start Filter - Dialog, Click Event
 
-        // Filter Success Function
-        function FilterSuccess() {
-            alert("FilterSuccess");
-            if ($("#updateTargetId").html() == "True") {
-
-                //now we can close the dialog
-                $('#filterDialog').dialog('close');
-                //twitter type notification
-                $('#commonMessage').html("Ok.");
-                $('#commonMessage').delay(400).slideDown(400).delay(3000).slideUp(400);
-                //Refresh Kendo Grid
-                //KendoGridRefresh();
-            }
-            else {
-                //show message in popup
-                $("#updateTargetId").show();
-            }
-        }
-
+        
         $("#gridFilterDialog").dialog({
             autoOpen: false,
             width: 600,
