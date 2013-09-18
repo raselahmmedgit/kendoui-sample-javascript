@@ -46,6 +46,37 @@
         }
     }
 
+    function GridReloadWithData(
+    model) {
+
+        console.log(model);
+
+        var ds1 = new kendo.data.DataSource({
+            data: model
+        });
+
+        console.log("1");
+
+        var myGrid = $('#grid').data('kendoGrid');
+
+        console.log("2");
+
+        //myGrid.dataSource.data = model;
+
+        console.log("3");
+
+        //myGrid.dataSource.read();
+        myGrid.dataSource.read(model);
+
+        console.log("4");
+
+        //myGrid.refresh();
+
+        console.log("5");
+
+        console.log("ok...");
+
+    }
 
     $(document).ready(function () {
 
@@ -107,7 +138,7 @@
         //-------------------------------------------------------
         //start Filter - Dialog, Click Event
 
-        
+
         $("#gridFilterDialog").dialog({
             autoOpen: false,
             width: 600,
@@ -117,7 +148,20 @@
                 "Ok": function () {
                     //make sure there is nothing on the message before we continue 
                     $("#updateTargetId").html('');
-                    $("#filterForm").submit();
+                    //$("#filterForm").submit();
+
+                    var filterModel = {};
+                    filterModel.FundSource = "FundSource";
+                    filterModel.FundAgency = "FundAgency";
+                    filterModel.Project = "Project";
+                    filterModel.Sector = "Sector";
+                    filterModel.ProvinceOrArea = "ProvinceOrArea";
+                    filterModel.DistrictOrAgency = "DistrictOrAgency";
+                    filterModel.ReferenceNumber = "ReferenceNumber";
+                    filterModel.FiscalYear = "FiscalYear";
+
+                    GridReloadWithData(filterModel);
+
                 },
                 "Cancel": function () {
                     $(this).dialog("close");

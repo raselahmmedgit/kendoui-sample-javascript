@@ -1,0 +1,160 @@
+﻿@{
+    ViewBag.Title = "InCell Edit";
+}
+<div id="basicPage">
+    <div id="grid">
+    </div>
+</div>
+<script type="text/javascript">
+
+    function CategoryRowSelect(id, e) {
+        console.log(id);
+        console.log(e);
+
+        var catGrid = $('#grid').data('kendoGrid');
+
+        var dataSource = catGrid.dataSource;
+
+        var allData = catGrid.dataSource.data();
+
+        var dataItem = catGrid.dataSource.get(id);
+
+        dataItem.set('Name', "Hello World!");
+        //dataItem.set('Select', true);
+
+//        if (dataItem.isNew() == false) {
+//            //                    console.log(dataItem.isNew());
+//            //                    console.log(dataItem.Name);
+//            //                    console.log(dataItem.container);
+//            //                    $(dataItem.container).find('input[name="Name"]').attr("readonly", true);
+//            $("#grid").find('input[name="Name"]').attr("readonly", true);
+//        }
+
+//        console.log(dataSource);
+
+//        console.log(allData);
+
+//        console.log(dataItem);
+
+//        console.log(dataItem.fields);
+
+//        console.log(dataItem.fields.Name);
+
+//        console.log(dataItem.fields.Name.editable);
+
+
+
+        //        dataItem.fields.Name.editable = true;
+
+        //        for (var i = 0; i < dataItem.fields.length; i++) {
+        //            console.log(i);
+        //        }
+    }
+
+    function CategoryNameEditor(container, options) {
+
+        console.log(container);
+        console.log(options);
+        console.log(options.field);
+
+    }
+
+    function OnDataBound(arg) {
+
+        //        console.log(arg);
+
+        //$("#grid").find('input[name="Name"]').attr("readonly", true);
+
+        //        var catGrid = $('#grid').data('kendoGrid');
+
+        //        var row = catGrid.select();
+        //        var uid = catGrid.data("uid");
+
+        //        console.log(row);
+
+        //        console.log(uid);
+
+    }
+
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                //read: "/Home/CategoryRead"
+                    read: "/Home/CategoryReadForInCell"
+                },
+                schema: {
+                    model: {
+                        id: "CategoryId",
+                        fields: {
+                            CategoryId: { type: "number", editable: false },
+                            Select: { type: "boolean" },
+                            //Select: { type: "boolean", editable: false },
+                            //Name: { type: "string", editable: false }
+                            Name: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 10,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            },
+            height: 250,
+            filterable: false,
+            dataBound: OnDataBound,
+            groupable: false,
+            sortable: false,
+            pageable: {
+                refresh: false,
+                pageSizes: false
+            },
+            toolbar: ["create"],
+            columns: [{ field: "CategoryId", title: "Category ID", width: 50, hidden: true, filterable: false },
+            { field: "Select", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' #= Select ? checked='checked' : checked='' # name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />" },
+            //{field: "CategoryId", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' #= Select ? checked='checked' : checked='' # name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />" },
+            //{ field: "CategoryId", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />" },
+            //{ field: "CategoryId", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row' onclick='CategoryRowSelect(#= CategoryId # , this)'/>" },
+            //{ field: "Select", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' #= Select ? checked='checked' : '' # class='check_row' onclick='CategoryRowSelect(#= CategoryId # , this)'/>" },
+            //{ field: "Select", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' #= Select ? checked='checked' : '' # class='check_row' onclick='CategoryRowSelect(#= CategoryId # , this)'/>", editor: CategoryNameEditor },
+                      {field: "Name", title: "Category Name", width: 250}//,
+            //{ command: ["edit", "destroy"], title: "Actions;", width: "172px" }
+                     ],
+            //editable: "inline"
+            editable: true
+        }); //end of kendo grid
+
+        $('input.chkSelect').live('click', function (e) {
+
+            console.log(e);
+            console.log(this);
+
+            var valueId = $(this).attr("value");
+            var catGrid = $('#grid').data('kendoGrid');
+            var dataSource = catGrid.dataSource;
+            var dataItem = catGrid.dataSource.get(valueId);
+
+            if ($(this).attr("checked") == "checked") {
+
+                console.log(valueId);
+                console.log('if');
+
+                dataItem.set('Name', "Checked");
+                dataItem.set('Select', true);
+
+            } else {
+
+                console.log(valueId);
+                console.log('else');
+
+                dataItem.set('Name', "Un checked");
+                dataItem.set('Select', false);
+
+            }
+
+        });
+
+    });
+
+</script>

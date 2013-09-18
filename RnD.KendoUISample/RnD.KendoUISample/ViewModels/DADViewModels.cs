@@ -76,6 +76,8 @@ namespace RnD.KendoUISample.ViewModels
         public string DistrictOrAgency { get; set; }
         public string ReferenceNumber { get; set; }
         public string FiscalYear { get; set; }
+        public string SubCategoreis { get; set; }
+        public int[] SubCategoryList { get; set; }
     }
 
     public class GridModifyViewModel

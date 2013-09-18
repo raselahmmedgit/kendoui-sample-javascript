@@ -49,6 +49,12 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        //InCellEdit
+        public ActionResult InCellEdit()
+        {
+            return View();
+        }
+
         public JsonResult CategoryRead(KendoUiGridParamViewModel request)
         {
             var categories = GetCategories();

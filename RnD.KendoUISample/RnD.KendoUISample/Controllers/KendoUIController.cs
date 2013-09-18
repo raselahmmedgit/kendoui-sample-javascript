@@ -30,6 +30,11 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        public ActionResult FinalFilter()
+        {
+            return View();
+        }
+
         #region Methods
 
         private List<Ok_Model> GetMasters()

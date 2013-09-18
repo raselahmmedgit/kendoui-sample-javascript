@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Java Script Test";
+}
+<div id="jsTestPage">
+    <ul id="ulTest">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+    </ul>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            //var index = $("#ulTest ul li").eq(1).css({ 'color': 'red' });
+            //        var index = $("ul#ulTest li").eq(0).hide();
+            //        var index2 = $("ul#ulTest li").eq(1).css({ 'color': 'red' });
+
+            //        var index3 = $("ul#ulTest li").eq().index();
+
+            //        console.log(index2);
+            //        console.log(index3);
+
+            var ulArr = new Array(1, 2, 3, 4);
+
+            var dbArr = new Array(2, 4);
+
+            var hideList = [];
+
+            for (var i = 1; i <= 4; i++) {
+
+                var ulVal = i;
+                var isHide = false;
+
+                for (var j = 0; j < dbArr.length; j++) {
+
+                    var valueVal = dbArr[j];
+                    isHide = false;
+
+                    if (ulVal == valueVal) {
+                        //                    console.log("UL Hide: " + ulVal);
+                        //                    break;
+                        //                    hideList.push(valueValBy);
+                        isHide = true;
+                        break;
+                    }
+                    //                else {
+                    //                    console.log("UL Display: " + ulVal);
+                    //                    break;
+                    //                }
+
+                } // end display for
+
+                //hideList.push(valueValBy);
+
+                if (isHide == false) {
+
+                    console.log('Got Id: ' + ulVal);
+
+                    var fIndex = ulVal - 1;
+                    //var fIndex = ulVal;
+
+                    console.log('Hide Id: ' + fIndex);
+
+                    $("ul#ulTest li").eq(fIndex).hide();
+
+                }
+
+            } //end ul for
+
+            //        console.log(hideList);
+
+            //        var sameArry = [];
+
+            //        for (var j = 0; j < dbArr.length; j++) {
+            //            var valueVal = dbArr[j];
+
+            //            var ulIndex = valueVal - 1;
+
+            //            console.log(valueVal);
+            //            console.log(ulIndex);
+
+            //            //var index = $("ul#ulTest li").eq(ulIndex).hide();
+
+            //            sameArry.push(ulIndex);
+            //        }
+
+            //        console.log(sameArry);
+
+        });
+
+    </script>
+</div>

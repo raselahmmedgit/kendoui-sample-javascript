@@ -19,6 +19,11 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        public ActionResult JsTest()
+        {
+            return View();
+        }
+
         public ActionResult Basic()
         {
             return View();
@@ -135,6 +140,13 @@ namespace RnD.KendoUISample.Controllers
             return Json(models, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult CategoryReadForInCell()
+        {
+            var models = GetInCellCategories();
+            //List<Category> models = GetCategories();
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult CategoryDetailsRead()
         {
             //var models = GetCategoryWithDetails();
@@ -157,6 +169,14 @@ namespace RnD.KendoUISample.Controllers
         private List<Category> GetCategories()
         {
             var categories = _db.Categories.ToList().Select(c => new Category { CategoryId = c.CategoryId, Name = c.Name });
+
+            //return categories.AsQueryable();
+            return categories.ToList();
+        }
+
+        private List<CategoryViewModel> GetInCellCategories()
+        {
+            var categories = _db.Categories.ToList().Select(c => new CategoryViewModel { CategoryId = c.CategoryId, Name = c.Name, Select = false });
 
             //return categories.AsQueryable();
             return categories.ToList();
