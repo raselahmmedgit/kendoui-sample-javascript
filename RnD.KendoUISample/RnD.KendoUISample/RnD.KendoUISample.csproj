@@ -784,6 +784,9 @@
     <Content Include="Views\KendoUI\FinalFilter.cshtml" />
     <Content Include="Views\Demo\InCellEdit.cshtml" />
     <Content Include="Views\Home\JsTest.cshtml" />
+    <Content Include="Views\Demo\ServerPassList.cshtml" />
+    <Content Include="Views\Demo\GridRowSelect.cshtml" />
+    <Content Include="Views\Demo\InLineEdit.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

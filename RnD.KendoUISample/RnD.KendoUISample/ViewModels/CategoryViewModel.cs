@@ -11,4 +11,13 @@ namespace RnD.KendoUISample.ViewModels
         public string Name { get; set; }
         public bool Select { get; set; }
     }
+
+    public class ParamViewModel
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        //public string[] IdList { get; set; }
+        //public IList<string> IdList { get; set; }
+        //public IList<ParamViewModel> ParamViewModelList { get; set; }
+    }
 }

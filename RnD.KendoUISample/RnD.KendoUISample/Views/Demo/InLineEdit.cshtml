@@ -81,16 +81,15 @@
         $("#grid").kendoGrid({
             dataSource: {
                 transport: {
-                    read: "/Demo/BasicCategoryRead"
-                    //read: "/Home/CategoryReadForInCell"
+                    //read: "/Home/CategoryRead"
+                    read: "/Home/CategoryReadForInCell"
                 },
                 schema: {
                     model: {
                         id: "CategoryId",
                         fields: {
                             CategoryId: { type: "number", editable: false },
-                            Select: { type: "string", editable: false },
-                            //Select: { type: "boolean" },
+                            Select: { type: "boolean" },
                             //Select: { type: "boolean", editable: false },
                             //Name: { type: "string", editable: false }
                             Name: { type: "string" }
@@ -103,18 +102,17 @@
                 serverSorting: false
             },
             height: 250,
-            filterable: true,
-            //dataBound: OnDataBound,
-            groupable: true,
-            sortable: true,
+            filterable: false,
+            dataBound: OnDataBound,
+            groupable: false,
+            sortable: false,
             pageable: {
-                refresh: true,
-                pageSizes: true
+                refresh: false,
+                pageSizes: false
             },
-            //toolbar: ["create"],
-            columns: [{ field: "CategoryId", title: "Category ID", width: 50, hidden: true, filterable: false, sortable: false },
-            { field: "Select", title: "Select", template: "<input id='chkCategoryId_#= CategoryId #' type='checkbox' name='chkCategoryId_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />", width: 80, filterable: false, sortable: false },
-            //{ field: "Select", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' #= Select ? checked='checked' : checked='' # name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />" },
+            toolbar: ["create"],
+            columns: [{ field: "CategoryId", title: "Category ID", width: 50, hidden: true, filterable: false },
+            { field: "Select", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' #= Select ? checked='checked' : checked='' # name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />" },
             //{field: "CategoryId", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' #= Select ? checked='checked' : checked='' # name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />" },
             //{ field: "CategoryId", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row chkSelect' />" },
             //{ field: "CategoryId", title: "Select", template: "<input id='chkSelect_#= CategoryId #' type='checkbox' name='chkSelect_#= CategoryId #' value='#= CategoryId #' class='check_row' onclick='CategoryRowSelect(#= CategoryId # , this)'/>" },
@@ -124,8 +122,7 @@
             //{ command: ["edit", "destroy"], title: "Actions;", width: "172px" }
                      ],
             //editable: "inline"
-            editable: "incell"
-            //editable: true
+            editable: true
         }); //end of kendo grid
 
         $('input.chkSelect').live('click', function (e) {
@@ -144,7 +141,7 @@
                 console.log('if');
 
                 dataItem.set('Name', "Checked");
-                //                dataItem.set('Select', true);
+                dataItem.set('Select', true);
 
             } else {
 
@@ -152,7 +149,7 @@
                 console.log('else');
 
                 dataItem.set('Name', "Un checked");
-                //                dataItem.set('Select', false);
+                dataItem.set('Select', false);
 
             }
 

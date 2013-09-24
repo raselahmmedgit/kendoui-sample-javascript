@@ -49,10 +49,43 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        //ServerSorting
+        public ActionResult ServerPassList()
+        {
+            return View();
+        }
+
+        //GridRowSelect
+        public ActionResult GridRowSelect()
+        {
+            return View();
+        }
+
+        //InLineEdit
+        public ActionResult InLineEdit()
+        {
+            return View();
+        }
+
+
         //InCellEdit
         public ActionResult InCellEdit()
         {
             return View();
+        }
+
+        public JsonResult BasicCategoryRead()
+        {
+            var models = GetCategories();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ProductRead()
+        {
+            var models = GetProducts();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult CategoryRead(KendoUiGridParamViewModel request)
@@ -90,7 +123,6 @@ namespace RnD.KendoUISample.Controllers
             //return Json(models);
         }
 
-
         public JsonResult PagingCategoryRead(KendoUiGridParamViewModel request)
         {
             var categories = GetCategories();
@@ -124,6 +156,21 @@ namespace RnD.KendoUISample.Controllers
             return Json(models, JsonRequestBehavior.AllowGet);
         }
 
+        //public JsonResult ListOfCategoryRead(string[] requestList)
+        //public JsonResult ListOfCategoryRead(IList<ParamViewModel> requestList)
+        public JsonResult ListOfCategoryRead(List<ParamViewModel> requestList)
+        //public JsonResult ListOfCategoryRead(ParamViewModel request)
+        //public JsonResult ListOfCategoryRead([Bind(Prefix = "requestList[]")]List<ParamViewModel> requestList)
+        {
+            var categories = GetCategories();
+            //List<Category> models = GetCategories();
+
+            //var models = GetCategories();
+            var models = categories.ToList();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
         //private IEnumerable<Category> GetCategories()
         private List<Category> GetCategories()
         {
@@ -133,6 +180,14 @@ namespace RnD.KendoUISample.Controllers
             return categories.ToList();
         }
 
+        //private IEnumerable<Product> GetProducts()
+        private List<Product> GetProducts()
+        {
+            var products = _db.Products.ToList().Select(c => new Product { ProductId = c.ProductId, Name = c.Name, Price = c.Price, CategoryId = c.CategoryId });
+
+            //return products.AsQueryable();
+            return products.ToList();
+        }
 
         #region Demo Data
 

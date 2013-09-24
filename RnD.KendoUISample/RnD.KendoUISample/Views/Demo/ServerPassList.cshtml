@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "Passing list of Data";
+}
+<div id="indexPage">
+    <div id="gridFilterZone">
+        <button id="btnFilterGrid">
+            Filter in Here</button>
+    </div>
+    <div id="gridZone">
+        <div id="grid">
+        </div>
+    </div>
+    <div id="gridScriptZone">
+        <script type="text/javascript">
+
+            // Getting Filter Model
+            function GetFilterModel() {
+
+                var requestList = [];
+
+                var idList = []
+                idList.push("1");
+                idList.push("2");
+                idList.push("3");
+
+                var paramViewModelList = [];
+                var paramViewModelChild = {};
+                paramViewModelChild.Id = "001";
+                paramViewModelChild.Name = "CHILD";
+                paramViewModelList.push(paramViewModelChild);
+
+                var paramViewModel1 = {};
+                paramViewModel1.Id = "1";
+                paramViewModel1.Name = "ABC";
+
+                //paramViewModel1.IdList = idList;
+                //paramViewModel1.ParamViewModelList = paramViewModelList;
+
+                var paramViewModel2 = {};
+                paramViewModel2.Id = "2";
+                paramViewModel2.Name = "XYZ";
+
+
+
+                //                    requestList.push("1");
+                //                    requestList.push("2");
+                //                    requestList.push("3");
+
+                requestList.push(paramViewModel1);
+                requestList.push(paramViewModel2);
+
+                var request = paramViewModel1;
+
+                //console.log(request);
+
+                var paramValue = { requestList: requestList };
+                //var paramValue = { request: paramViewModel2 };
+                //var paramValue = kendo.stringify({ requestList: requestList });
+
+                //return requestList;
+                return paramValue;
+                //return request;
+
+            } //end GetFilterModel()
+
+            function GridReloadWithData(
+    model) {
+
+                var myGrid = $('#grid').data('kendoGrid');
+
+                //myGrid.dataSource.read();
+                myGrid.dataSource.read(model);
+
+            }
+
+            $(document).ready(function () {
+
+                $("#grid").kendoGrid({
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "/Demo/ListOfCategoryRead",
+                                data: GetFilterModel
+                            }
+                        },
+                        schema: {
+
+                            model: {
+                                fields: {
+                                    CategoryId: { type: "number" },
+                                    Name: { type: "string" }
+                                }
+                            }
+                        },
+                        pageSize: 5,
+                        serverPaging: false,
+                        serverFiltering: false,
+                        serverSorting: false
+                    },
+                    height: 250,
+                    filterable: true,
+                    groupable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true
+                    },
+                    columns: [{
+                        field: "CategoryId",
+                        title: "Category ID",
+                        width: 50,
+                        filterable: false
+                    },
+                             {
+                                 field: "Name",
+                                 title: "Category Name",
+                                 width: 250
+                             }]
+                });
+
+
+                $("#btnFilterGrid").click(function () {
+
+                    var requestList = [];
+
+                    var idList = []
+                    idList.push("1");
+                    idList.push("2");
+                    idList.push("3");
+
+                    var paramViewModelList = [];
+                    var paramViewModelChild = {};
+                    paramViewModelChild.Id = "001";
+                    paramViewModelChild.Name = "CHILD";
+                    paramViewModelList.push(paramViewModelChild);
+
+                    var paramViewModel1 = {};
+                    paramViewModel1.Id = "1";
+                    paramViewModel1.Name = "ABC";
+
+                    var paramViewModel2 = {};
+                    paramViewModel2.Id = "2";
+                    paramViewModel2.Name = "XYZ";
+
+                    //paramViewModel2.IdList = idList;
+                    paramViewModel2.ParamViewModelList = paramViewModelList;
+
+                    //                    requestList.push("1");
+                    //                    requestList.push("2");
+                    //                    requestList.push("3");
+
+                    requestList.push(paramViewModel1);
+                    requestList.push(paramViewModel2);
+
+                    var request = paramViewModel2;
+
+                    //console.log(request);
+
+                    var paramValue = { requestList: requestList };
+                    //var paramValue = { request: paramViewModel2 };
+                    //var paramValue = kendo.stringify({ requestList: requestList });
+
+                    //GridReloadWithData(requestList);
+                    GridReloadWithData(paramValue);
+                    //GridReloadWithData(request);
+
+                });
+
+            });
+            //Note: List of data post problem i can solve it by string one object
+        </script>
+    </div>
+</div>

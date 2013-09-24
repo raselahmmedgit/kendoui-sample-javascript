@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Grid Row Select by Checkbox";
+}
+<div id="indexPage">
+    <div id="gridZone">
+        <div id="gridCategory">
+        </div>
+        <br />
+        <div id="gridProduct">
+        </div>
+    </div>
+    <div id="gridScriptZone">
+        <script type="text/javascript">
+
+
+            $(document).ready(function () {
+
+                $("#gridCategory").kendoGrid({
+                    dataSource: {
+                        transport: {
+                            read: "/Demo/BasicCategoryRead"
+                        },
+                        schema: {
+                            model: {
+                                fields: {
+                                    CategoryId: { type: "number" },
+                                    Name: { type: "string" }
+                                }
+                            }
+                        },
+                        pageSize: 10,
+                        serverPaging: false,
+                        serverFiltering: false,
+                        serverSorting: false
+                    },
+                    height: 250,
+                    filterable: true,
+                    groupable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true
+                    },
+                    columns: [{ field: "CategoryId", title: "Select", template: "<input id='chkCategoryId_#= CategoryId #' type='checkbox' name='chkCategoryId_#= CategoryId #' value='#= CategoryId #' class='check_row chkCategoryIdSelect' />", width: 80, filterable: false, sortable: false },
+                              { field: "CategoryId", title: "Category ID", hidden: true, filterable: false, sortable: false },
+                              { field: "Name", title: "Category Name" }
+                             ]
+                }); //end of kendo grid
+
+                $("#gridProduct").kendoGrid({
+                    dataSource: {
+                        transport: {
+                            read: "/Demo/ProductRead"
+                        },
+                        schema: {
+                            model: {
+                                fields: {
+                                    ProductId: { type: "number" },
+                                    Name: { type: "string" },
+                                    Price: { type: "number" },
+                                    CategoryId: { type: "number" }
+                                }
+                            }
+                        },
+                        pageSize: 10,
+                        serverPaging: false,
+                        serverFiltering: false,
+                        serverSorting: false
+                    },
+                    height: 250,
+                    filterable: true,
+                    groupable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true
+                    },
+                    columns: [{ field: "ProductId", title: "Select", template: "<input id='chkProductId_#= ProductId #' type='checkbox' name='chkProductId_#= ProductId #' value='#= ProductId #' class='check_row chkProductIdSelect' />", width: 80, filterable: false, sortable: false },
+                              { field: "ProductId", title: "Product Id", hidden: true, filterable: false, sortable: false },
+                              { field: "Name", title: "Product Name" },
+                              { field: "Price", title: "Product Price" },
+                              { field: "CategoryId", title: "Category Id", hidden: true, filterable: false, sortable: false },
+                             ]
+                }); //end of kendo grid
+
+                $('input.chkCategoryIdSelect').live('click', function (e) {
+
+                    console.log(e);
+                    console.log(this);
+
+                    var valueId = $(this).attr("value");
+                    //                    var catGrid = $('#gridCategory').data('kendoGrid');
+                    //                    var dataSource = catGrid.dataSource;
+                    //                    var dataItem = catGrid.dataSource.get(valueId);
+                    //                    console.log(dataItem);
+
+                    if ($(this).attr("checked") == "checked") {
+
+                        console.log(valueId);
+                        console.log('if');
+
+                    } else {
+
+                        console.log(valueId);
+                        console.log('else');
+
+                    }
+
+                });
+
+                $('input.chkProductIdSelect').live('click', function (e) {
+
+                    console.log(e);
+                    console.log(this);
+
+                    var valueId = $(this).attr("value");
+                    //                    var proGrid = $('#gridProduct').data('kendoGrid');
+                    //                    var dataSource = proGrid.dataSource;
+                    //                    var dataItem = proGrid.dataSource.get(valueId);
+                    //                    console.log(dataItem);
+
+                    if ($(this).attr("checked") == "checked") {
+
+                        console.log(valueId);
+                        console.log('if');
+
+                    } else {
+
+                        console.log(valueId);
+                        console.log('else');
+
+                    }
+
+                });
+
+            });
+
+        </script>
+    </div>
+</div>
