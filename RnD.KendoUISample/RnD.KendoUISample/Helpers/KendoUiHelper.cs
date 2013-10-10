@@ -14,9 +14,20 @@ namespace RnD.KendoUISample.Helpers
 
         private static KendoGridResult<T> ReturnGridData<T>(KendoGridPost requestParams, ref IQueryable<T> collection)
         {
+
             //If the sort Order is provided perform a sort on the specified column
             if (requestParams.SortOrd.IsNotEmpty())
             {
+                //Test
+                var qqq = collection.ToList();
+
+                var ddd = collection.OrderByDescending(x => x.GetType().GetProperty(requestParams.SortOn));
+                var aaa = collection.OrderBy(x => x.GetType().GetProperty(requestParams.SortOn));
+
+                var ddd1 = qqq.OrderByDescending(x => x.GetType().GetProperty(requestParams.SortOn));
+                var aaa1 = qqq.OrderBy(x => x.GetType().GetProperty(requestParams.SortOn));
+                //Test
+                
                 collection = requestParams.SortOrd == "desc"
                              ? collection.OrderByDescending(x => requestParams.SortOn)
                              : collection.OrderBy(x => requestParams.SortOn);

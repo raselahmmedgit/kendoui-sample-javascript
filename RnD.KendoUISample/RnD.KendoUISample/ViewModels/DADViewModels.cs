@@ -135,4 +135,23 @@ namespace RnD.KendoUISample.ViewModels
         public float ExpendedAmount { get; set; }
     }
 
+    public class ReportCriteriaViewModel
+    {
+        public string CriteriaField { get; set; }
+        public string[] CriteriaList { get; set; }
+    }
+
+    public class ReportColumnViewModel
+    {
+        public string ColumnId { get; set; }
+        public string ColumnName { get; set; }
+    }
+
+    public class ReportViewModel
+    {
+        public int ColumnId { get; set; }
+        public string ColumnName { get; set; }
+        public bool IsSelect { get; set; }
+        public string[] CriteriaList { get; set; }
+    }
 }

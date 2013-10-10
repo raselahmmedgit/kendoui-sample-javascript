@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "Report Page";
+}
+<div id="reportPage">
+    <div id="filterZone">
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        @*<input id='chkColumnId_1' type='checkbox' name='chkColumnId[]' value='1' class='chkColumnId' ref='Donar' />*@
+                        <input id='chkColumnId_1' type='checkbox' name='ColumnId' value='1' class='chkColumnId'
+                            ref='Donar' />
+                    </td>
+                    <td>
+                        Donar
+                    </td>
+                    <td>
+                        <select id="ddlDonarCriteria" style="width: 600px;">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @*<input id='chkColumnId_2' type='checkbox' name='chkColumnId[]' value='2' class='chkColumnId' ref='Project Title' />*@
+                        <input id='chkColumnId_2' type='checkbox' name='ColumnId' value='2' class='chkColumnId'
+                            ref='Project Title' />
+                    </td>
+                    <td>
+                        Project Title
+                    </td>
+                    <td>
+                        <select id="ddlProjectTitleCriteria" style="width: 600px;">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @*<input id='chkColumnId_2' type='checkbox' name='chkColumnId[]' value='2' class='chkColumnId' ref='Project Number' />*@
+                        <input id='chkColumnId_3' type='checkbox' name='ColumnId' value='3' class='chkColumnId'
+                            ref='Project Number' />
+                    </td>
+                    <td>
+                        Project Number
+                    </td>
+                    <td>
+                        <select id="ddlProjectNumberCriteria" style="width: 600px;">
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <div>
+            <button id="btnSearch" class="button">
+                Search</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function ResetForm() {
+        //Set Select Report Criteria
+        var donarCriteriaValues = $("#ddlDonarCriteria").data("kendoMultiSelect").value(0);
+        var projectTitleCriteriaValues = $("#ddlProjectTitleCriteria").data("kendoMultiSelect").value(0);
+        var projectNumberCriteriaValues = $("#ddlProjectNumberCriteria").data("kendoMultiSelect").value(0);
+    }
+
+    $(document).ready(function () {
+
+        $("#ddlDonarCriteria").kendoMultiSelect({
+            placeholder: "- Select -",
+            dataTextField: "Text",
+            dataValueField: "Value",
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Report/GetDonarCriteriaList"
+                    }
+                }
+            }
+        });
+
+        $("#ddlProjectTitleCriteria").kendoMultiSelect({
+            placeholder: "- Select -",
+            dataTextField: "Text",
+            dataValueField: "Value",
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Report/GetProjectTitleCriteriaList"
+                    }
+                }
+            }
+        });
+
+        $("#ddlProjectNumberCriteria").kendoMultiSelect({
+            placeholder: "- Select -",
+            dataTextField: "Text",
+            dataValueField: "Value",
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Report/GetProjectNumberCriteriaList"
+                    }
+                }
+            }
+        });
+
+        $("#btnSearch").click(function () {
+
+            var reportViewModelList = [];
+            //            var reportColumnViewModelList = [];
+            //            var reportCriteriaViewModelList = [];
+
+            //Get Select Report Criteria
+            var donarCriteriaValues = $("#ddlDonarCriteria").data("kendoMultiSelect").value();
+            var projectTitleCriteriaValues = $("#ddlProjectTitleCriteria").data("kendoMultiSelect").value();
+            var projectNumberCriteriaValues = $("#ddlProjectNumberCriteria").data("kendoMultiSelect").value();
+
+            console.log(donarCriteriaValues);
+            console.log(projectTitleCriteriaValues);
+            console.log(projectNumberCriteriaValues);
+
+            console.log(donarCriteriaValues.length);
+
+            //Get Checked Report Column
+            $("input[type='checkbox'].chkColumnId").each(function () {
+
+                var chkColumnIdValue = $(this).attr("value");
+                var chkColumnNameValue = $(this).attr("ref");
+
+                var reportViewModel = {};
+                reportViewModel.ColumnId = chkColumnIdValue;
+                reportViewModel.ColumnName = chkColumnNameValue;
+
+                //Checked Column Take
+                if ($(this).is(":checked")) {
+
+                    //                    var reportColumnViewModel = {};
+                    //                    reportColumnViewModel.ColumnId = chkColumnIdValue;
+                    //                    reportColumnViewModel.ColumnName = chkColumnNameValue;
+
+                    reportViewModel.IsSelect = true;
+
+                    //                    console.log(reportColumnViewModel);
+
+                    //                    // Push Data to Array
+                    //                    reportColumnViewModelList.push(reportColumnViewModel);
+
+                }
+
+                //Selected Criteria Take
+                if (chkColumnIdValue == 1)//Donar
+                {
+                    //Donar Criteria Null Check
+                    if (donarCriteriaValues.length != 0) {
+                        reportViewModel.CriteriaList = donarCriteriaValues;
+                    }
+                }
+                else if (chkColumnIdValue == 2)//ProjectTitle
+                {
+                    //ProjectTitle Criteria Null Check
+                    if (projectTitleCriteriaValues.length != 0) {
+                        reportViewModel.CriteriaList = projectTitleCriteriaValues;
+                    }
+                }
+                else if (chkColumnIdValue == 3)//ProjectNumber
+                {
+                    //ProjectNumber Criteria Null Check
+                    if (projectNumberCriteriaValues.length != 0) {
+                        reportViewModel.CriteriaList = projectNumberCriteriaValues;
+                    }
+                }
+
+                console.log(reportViewModel);
+
+                // Push Data to Array
+                reportViewModelList.push(reportViewModel);
+
+            });
+
+            //            //Checking Donar Criteria Selected
+            //            //if (donarCriteriaValues != undefined || donarCriteriaValues != null || donarCriteriaValues.length != 0 || (donarCriteriaValues.length != 1 && donarCriteriaValues[0] != ""))
+            //            if (donarCriteriaValues.length != 0) {
+
+            //                console.log("if");
+            //                console.log(donarCriteriaValues);
+
+            //                var reportCriteriaViewModel = {};
+            //                reportCriteriaViewModel.CriteriaField = null;
+            //                reportCriteriaViewModel.CriteriaList = donarCriteriaValues;
+
+            //                // Push Data to Array
+            //                reportCriteriaViewModelList.push(reportCriteriaViewModel);
+
+            //            }
+            //            //            else {
+
+            //            //                console.log("else");
+
+            //            //            }
+
+            //            //Checking ProjectTitle Criteria Selected
+            //            if (projectTitleCriteriaValues.length != 0) {
+
+            //                var reportCriteriaViewModel = {};
+            //                reportCriteriaViewModel.CriteriaField = null;
+            //                reportCriteriaViewModel.CriteriaList = projectTitleCriteriaValues;
+
+            //                // Push Data to Array
+            //                reportCriteriaViewModelList.push(reportCriteriaViewModel);
+
+            //            }
+
+            //            //Checking ProjectTitle Criteria Selected
+            //            if (projectNumberCriteriaValues.length != 0) {
+
+            //                var reportCriteriaViewModel = {};
+            //                reportCriteriaViewModel.CriteriaField = null;
+            //                reportCriteriaViewModel.CriteriaList = projectNumberCriteriaValues;
+
+            //                // Push Data to Array
+            //                reportCriteriaViewModelList.push(reportCriteriaViewModel);
+
+            //            }
+
+            //            console.log(reportColumnViewModelList);
+            //            console.log(reportCriteriaViewModelList);
+
+            console.log(reportViewModelList);
+
+            var postUrl = '/Report/Search';
+
+            //modelList
+            var paramValue = JSON.stringify({ modelList: reportViewModelList });
+            //var paramValue = JSON.stringify({ columnList: reportColumnViewModelList, criteriaList: reportCriteriaViewModelList });
+
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: paramValue,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    console.log(data);
+                    ResetForm();
+                },
+                error: function (objAjaxRequest, strError) {
+                    var respText = objAjaxRequest.responseText;
+                    console.log(respText);
+                    ResetForm();
+                }
+
+            });
+
+            return false;
+
+        });
+
+    });
+
+</script>

@@ -224,4 +224,5 @@ namespace RnD.KendoUISample.Models
         public int E_ModelId { get; set; }
 
     }
+
 }

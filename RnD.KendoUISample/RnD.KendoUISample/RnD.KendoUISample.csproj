@@ -65,6 +65,7 @@
     <Compile Include="Controllers\DemoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KendoUIController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\TabController.cs" />
     <Compile Include="Helpers\KendoGridPost.cs" />
     <Compile Include="Helpers\KendoUiHelper.cs" />
@@ -787,6 +788,7 @@
     <Content Include="Views\Demo\ServerPassList.cshtml" />
     <Content Include="Views\Demo\GridRowSelect.cshtml" />
     <Content Include="Views\Demo\InLineEdit.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
