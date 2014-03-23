@@ -9,9 +9,7 @@ using RnD.KendoUISample.Helpers;
 
 namespace RnD.KendoUISample.Controllers
 {
-    public class DemoController : Controller
-    {
-        AppDbContext _db = new AppDbContext();
+    AppDbContext _db = new AppDbContext();
 
         //
         // GET: /Demo/
@@ -27,6 +25,11 @@ namespace RnD.KendoUISample.Controllers
         }
 
         public ActionResult CustomPagination()
+        {
+            return View();
+        }
+
+        public ActionResult CustomFiltering()
         {
             return View();
         }
@@ -61,6 +64,12 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        //ServerPageSortFilter
+        public ActionResult ServerPageSortFilter()
+        {
+            return View();
+        }
+
         //GridRowSelect
         public ActionResult GridRowSelect()
         {
@@ -80,6 +89,46 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        //InCellEditTotalFooter
+        public ActionResult InCellEditTotalFooter()
+        {
+            return View();
+        }
+
+        //MultiSelect Cascading
+        public ActionResult MultiSelectCasade()
+        {
+            return View();
+        }
+
+        public JsonResult GetMultiSelectCategoryListRead()
+        {
+            var models = GetCategories();
+
+            var modelList = models.Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() }).ToList();
+
+            return Json(modelList, JsonRequestBehavior.AllowGet);
+        }
+
+        //public JsonResult GetMultiSelectProductListRead()
+        //{
+        //    var models = GetProducts();
+
+        //    var modelList = models.Select(x => new SelectListItem { Text = x.Name, Value = x.ProductId.ToString() }).ToList();
+
+        //    return Json(modelList, JsonRequestBehavior.AllowGet);
+        //}
+
+        //public JsonResult GetMultiSelectProductListRead(string categoryValues)
+        public JsonResult GetMultiSelectProductListRead(MultiSelectFilterViewModel model)
+        {
+            var models = GetProducts();
+
+            var modelList = models.Select(x => new SelectListItem { Text = x.Name, Value = x.ProductId.ToString() }).ToList();
+
+            return Json(modelList, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult BasicCategoryRead()
         {
             var models = GetCategories();
@@ -87,9 +136,25 @@ namespace RnD.KendoUISample.Controllers
             return Json(models, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult CategoryForSelectListItemRead()
+        {
+            var models = GetCategoriesForSelectListItem();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult ProductRead()
         {
             var models = GetProducts();
+            //var models = GetProductViewModels();
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ProductSelectRead()
+        {
+            //var models = GetProducts();
+            var models = GetProductSelectViewModels();
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }
@@ -100,7 +165,7 @@ namespace RnD.KendoUISample.Controllers
             //List<Category> models = GetCategories();
 
             //var models = GetCategories();
-            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+            var models = categories.Skip(request.pageSize * request.page).Take(request.pageSize).ToList();
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }
@@ -135,7 +200,7 @@ namespace RnD.KendoUISample.Controllers
             //List<Category> models = GetCategories();
 
             //var models = GetCategories();
-            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+            var models = categories.Skip(request.pageSize * request.page).Take(request.pageSize).ToList();
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }
@@ -146,7 +211,7 @@ namespace RnD.KendoUISample.Controllers
             //List<Category> models = GetCategories();
 
             //var models = GetCategories();
-            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+            var models = categories.Skip(request.pageSize * request.page).Take(request.pageSize).ToList();
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }
@@ -157,7 +222,7 @@ namespace RnD.KendoUISample.Controllers
             //List<Category> models = GetCategories();
 
             //var models = GetCategories();
-            var models = categories.Skip(request.PageSize * request.Page).Take(request.PageSize).ToList();
+            var models = categories.Skip(request.pageSize * request.page).Take(request.pageSize).ToList();
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }
@@ -186,6 +251,15 @@ namespace RnD.KendoUISample.Controllers
             return categories.ToList();
         }
 
+        //private IEnumerable<SelectListItem> GetCategoriesForSelectListItem()
+        private List<SelectListItem> GetCategoriesForSelectListItem()
+        {
+            var categories = _db.Categories.ToList().Select(c => new SelectListItem { Value = c.CategoryId.ToString(), Text = c.Name });
+
+            //return categories.AsQueryable();
+            return categories.ToList();
+        }
+
         //private IEnumerable<Product> GetProducts()
         private List<Product> GetProducts()
         {
@@ -193,6 +267,24 @@ namespace RnD.KendoUISample.Controllers
 
             //return products.AsQueryable();
             return products.ToList();
+        }
+
+        //ProductViewModel
+        //private IEnumerable<Product> GetProductViewModels()
+        private List<ProductViewModel> GetProductViewModels()
+        {
+            var productViewModels = _db.Products.ToList().Select(c => new ProductViewModel { ProductId = c.ProductId, ProductName = c.Name, ProductPrice = c.Price, CategoryId = c.CategoryId, CategoryName = c.Category != null ? c.Category.Name : null });
+
+            return productViewModels.ToList();
+        }
+
+        private List<ProductViewModel> GetProductSelectViewModels()
+        {
+            //var productViewModels = _db.Products.ToList().Select(c => new ProductViewModel { ProductId = c.ProductId, ProductName = c.Name, ProductPrice = c.Price, CategoryId = c.CategoryId, CategoryName = c.Category != null ? c.Category.Name : null, IsSelect = false });
+
+            var productViewModels = _db.Products.ToList().Select(c => new ProductViewModel { ProductId = c.ProductId, ProductName = c.Name, ProductPrice = c.Price, CategoryId = c.CategoryId, CategoryName = c.Category != null ? c.Category.Name : null });
+
+            return productViewModels.ToList();
         }
 
         #region Demo Data
