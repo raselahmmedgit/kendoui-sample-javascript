@@ -49,8 +49,14 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
-        //ServerSorting
+        //ServerPassList
         public ActionResult ServerPassList()
+        {
+            return View();
+        }
+
+        //ServerPageAndSort
+        public ActionResult ServerPageAndSort()
         {
             return View();
         }
