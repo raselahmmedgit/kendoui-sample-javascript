@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using RnD.KendoUISample.ViewModels;
 using RnD.KendoUISample.Models;
+using RnD.KendoUISample.Helpers;
 
 namespace RnD.KendoUISample.Controllers
 {
@@ -34,6 +35,69 @@ namespace RnD.KendoUISample.Controllers
         {
             return View();
         }
+
+        public ActionResult NumberUI()
+        {
+            var categories = SelectListItemExtension.PopulateDropdownList(_db.Categories.ToList<Category>(), "CategoryId", "Name").ToList();
+
+            var model = new CreateOrEditProductViewModel()
+            {
+                ddlCategories = categories
+            };
+
+            return View(model);
+        }
+
+        public ActionResult Create()
+        {
+            //var categories = _db.Categories.ToList<Category>().PopulateDropdownList("CategoryId", "Name").ToList();
+            var categories = SelectListItemExtension.PopulateDropdownList(_db.Categories.ToList<Category>(), "CategoryId", "Name").ToList();
+            //ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
+
+            var model = new CreateOrEditProductViewModel()
+            {
+                ddlCategories = categories
+            };
+
+            //return View();
+            //return PartialView("_Create");
+            //return View("_Create");
+            return View("_Create", model);
+        }
+
+        //
+        // POST: /Product/Create
+
+        [HttpPost]
+        public ActionResult Create(CreateOrEditProductViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Product product = new Product
+                    {
+                        Name = model.Name,
+                        Price = model.Price
+                    };
+
+                    //_db.Products.Add(product);
+                    //_db.SaveChanges();
+
+                    //return RedirectToAction("Index");
+                    return Content(Boolean.TrueString);
+                }
+
+                //return View(category);
+                //return PartialView("_Add", category);
+                return Content("Please review your form.");
+            }
+            catch (Exception ex)
+            {
+                return Content("Error Occured!");
+            }
+        }
+
 
         #region Methods
 

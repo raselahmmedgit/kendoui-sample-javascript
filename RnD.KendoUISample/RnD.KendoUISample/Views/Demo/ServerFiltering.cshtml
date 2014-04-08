@@ -3,7 +3,7 @@
 }
 <div id="indexPage">
     <h2>
-        Kendo UI Grid Server Paging, Sorting, Filtering
+        Kendo UI Grid ServerFiltering
     </h2>
     <div id="gridWithParam">
     </div>
@@ -11,11 +11,12 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        
+
         $("#gridWithParam").kendoGrid({
             dataSource: {
                 transport: {
-                    read: "/Demo/CategoryReadWithParamForFilter"
+                    read: "/Demo/FilteringCategoryRead"
+                    //read: "/Demo/CategoryReadWithParamForFilter"
                 },
                 schema: {
                     data: function (data) {

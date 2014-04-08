@@ -22,10 +22,10 @@
                         }
                     }
                 },
-                pageSize: 10,
-                serverPaging: false,
-                serverFiltering: false,
-                serverSorting: false
+                pageSize: 5,
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
             },
             height: 250,
             filterable: true,
@@ -47,6 +47,8 @@
                                  width: 250
                              }]
         }); //end of kendo grid
+
+        //kendo.ui.progress($("#grid"), true)
 
     });
 

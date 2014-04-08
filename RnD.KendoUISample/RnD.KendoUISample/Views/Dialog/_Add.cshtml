@@ -1,0 +1,29 @@
+﻿@model RnD.KendoUISample.Models.Category
+@using (Ajax.BeginForm("Add", "Dialog", null,
+        new AjaxOptions
+        {
+            UpdateTargetId = "updateTargetId",
+            InsertionMode = InsertionMode.Replace,
+            HttpMethod = "POST",
+            OnBegin = "AppCommonWindowBegin",
+            OnSuccess = "AppCommonWindowSuccess",
+            OnComplete = "AppCommonWindowComplete",
+        }, new { @id = "appCommonWindowForm" }))
+{
+    
+    <fieldset>
+        <legend>Category:</legend>
+        @Html.ValidationSummary(true)
+        <div id="updateTargetId" class="error invisible">
+        </div>
+        <div class="editor-field">
+            <strong>@Html.LabelFor(model => model.Name): </strong>
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            <input type="submit" name="btnSubmit" value="Save" class="button" />
+            <input type="button" name="btnCancel" value="Cancel" class="button" onclick="CloseAppCommonWindow()" />
+        </div>
+    </fieldset>
+}

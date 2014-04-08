@@ -154,4 +154,10 @@ namespace RnD.KendoUISample.ViewModels
         public bool IsSelect { get; set; }
         public string[] CriteriaList { get; set; }
     }
+
+    public class MultiSelectFilterViewModel
+    {
+        public string CategoryTexts { get; set; }
+        public string CategoryValues { get; set; }
+    }
 }

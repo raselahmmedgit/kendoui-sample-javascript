@@ -1,0 +1,125 @@
+﻿@model RnD.KendoUISample.ViewModels.CreateOrEditProductViewModel
+@{
+    ViewBag.Title = "Number UI";
+}
+@using (Ajax.BeginForm("Create", "KendoUI", null,
+new AjaxOptions
+{
+    UpdateTargetId = "updateTargetId",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST",
+    OnSuccess = "AddProductSuccess",
+}, new { @id = "addProductForm" }))
+{
+    <div id="numberUIPage">
+        <fieldset>
+            <legend>Product:</legend>
+            @Html.ValidationSummary(true)
+            <div id="updateTargetId" class="invisible">
+            </div>
+            <div class="editor-field">
+                <strong>@Html.LabelFor(model => model.Name): </strong>
+                @Html.TextBoxFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+            <div class="editor-field">
+                <strong>@Html.LabelFor(model => model.Price): </strong>
+                @Html.TextBoxFor(model => model.Price)
+                @Html.ValidationMessageFor(model => model.Price)
+            </div>
+            <div class="editor-field">
+                <strong>Contribution Rate: </strong>
+                <input type="text" name="txtContributionRate" id="txtContributionRate" value="5.00" />
+            </div>
+            <div class="editor-field">
+                <strong>Total Cost: </strong>
+                <input type="text" name="txtTotalCost" id="txtTotalCost" />
+            </div>
+            <div class="editor-field">
+                <input id="addProduct" class="button" type="submit" name="addProduct" value="Save" />
+            </div>
+        </fieldset>
+    </div>
+    
+}
+<script type="text/javascript">
+
+    function AddProductSuccess() {
+
+        $("#updateTargetId").show();
+    }
+
+    function PriceOnChange() {
+
+        var priceValue = this.value();
+        var contributionRateValue = $("#txtContributionRate").data("kendoNumericTextBox").value();
+
+        var totalCostValue = parseFloat(contributionRateValue) * parseFloat(priceValue);
+
+        $("#txtTotalCost").data("kendoNumericTextBox").value(totalCostValue);
+
+    }
+
+    function PriceOnSpin() {
+
+        var priceValue = this.value();
+        var contributionRateValue = $("#txtContributionRate").data("kendoNumericTextBox").value();
+
+        var totalCostValue = parseFloat(contributionRateValue) * parseFloat(priceValue);
+
+        $("#txtTotalCost").data("kendoNumericTextBox").value(totalCostValue);
+
+    }
+
+    function ContributionRateOnChange() {
+
+        var contributionRateValue = this.value();
+        var priceValue = $("#Price").data("kendoNumericTextBox").value();
+
+        var totalCostValue = parseFloat(contributionRateValue) * parseFloat(priceValue);
+
+        $("#txtTotalCost").data("kendoNumericTextBox").value(totalCostValue);
+
+    }
+
+    function ContributionRateOnSpin() {
+
+        var contributionRateValue = this.value();
+        var priceValue = $("#Price").data("kendoNumericTextBox").value();
+
+        var totalCostValue = parseFloat(contributionRateValue) * parseFloat(priceValue);
+
+        $("#txtTotalCost").data("kendoNumericTextBox").value(totalCostValue);
+
+    }
+
+    function TotalCostOnChange() {
+        console.log("Change :: " + this.value());
+    }
+
+    function TotalCostOnSpin() {
+        console.log("Spin :: " + this.value());
+    }
+
+    $(document).ready(function () {
+
+        //$("#Price").kendoNumericTextBox();
+
+        $("#Price").kendoNumericTextBox({
+            change: PriceOnChange,
+            spin: PriceOnSpin
+        });
+
+        $("#txtContributionRate").kendoNumericTextBox({
+            change: ContributionRateOnChange,
+            spin: ContributionRateOnSpin
+        });
+
+        $("#txtTotalCost").kendoNumericTextBox({
+            change: TotalCostOnChange,
+            spin: TotalCostOnSpin
+        });
+
+    });
+
+</script>

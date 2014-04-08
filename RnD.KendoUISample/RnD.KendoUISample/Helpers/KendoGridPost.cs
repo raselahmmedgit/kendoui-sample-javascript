@@ -5,7 +5,7 @@ using System.Web;
 
 namespace RnD.KendoUISample.Helpers
 {
-        public class KendoGridPost
+    public class KendoGridPost
     {
         public KendoGridPost()
         {
@@ -66,4 +66,5 @@ namespace RnD.KendoUISample.Helpers
         public string FilterOperator { get; set; }
         public string FilterValue { get; set; }
     }
+
 }

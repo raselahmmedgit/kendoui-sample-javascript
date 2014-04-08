@@ -9,7 +9,9 @@ using RnD.KendoUISample.Helpers;
 
 namespace RnD.KendoUISample.Controllers
 {
-    AppDbContext _db = new AppDbContext();
+    public class DemoController : Controller
+    {
+        AppDbContext _db = new AppDbContext();
 
         //
         // GET: /Demo/
@@ -106,6 +108,12 @@ namespace RnD.KendoUISample.Controllers
             var models = GetCategories();
 
             var modelList = models.Select(x => new SelectListItem { Text = x.Name, Value = x.CategoryId.ToString() }).ToList();
+
+            var gameList = new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "1", Value ="10.00"},
+                                new SelectListItem { Text = "1", Value ="10.00"}
+                            };
 
             return Json(modelList, JsonRequestBehavior.AllowGet);
         }

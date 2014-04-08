@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "InCell Edit Total Footer";
+}
+<div id="basicPage">
+    <div id="grid">
+    </div>
+    <br />
+    <button id="btnFooterValue" class="button">
+        Get Footer Value
+    </button>
+</div>
+<script type="text/javascript">
+
+    function on_change(e) {
+
+        console.log("on change");
+
+        console.log(e);
+
+    }
+
+    function save_changes(e) {
+
+        console.log("save changes");
+
+        console.log(e);
+
+    }
+
+    function edit(e) {
+
+        console.log("edit");
+
+        console.log(e);
+
+    }
+
+    function save(e) {
+
+        //console.log("save");
+        //console.log(e);
+
+        var newPrice = e.values.Price; ;
+        e.model.set('Price', newPrice);
+
+        //console.log(newPrice);
+
+        var grid = $("#grid").data("kendoGrid");
+
+        var gridPriceAggregate = grid.dataSource.aggregates().Price;
+
+        var gridPriceSum = gridPriceAggregate.sum;
+
+        var gridPriceSumKendoFormat = kendo.toString(gridPriceSum, 'n2')
+
+        //console.log(gridPriceSumKendoFormat);
+
+        //        var gridPriceTotal = parseFloat(0);
+
+        //        //Get All Data from Grid
+        //        var allData = grid.dataSource.data();
+        //        var totalNumber = allData.length;
+
+        //        for (var i = 0; i < totalNumber; i++) {
+
+        //            var currentDataItem = allData[i];
+
+        //            var productPrice = currentDataItem.Price;
+
+        //            gridPriceTotal += parseFloat(productPrice);
+        //        }
+
+        //        var gridPriceTotalKendoFormat = kendo.toString(gridPriceTotal, 'n2');
+
+        //        console.log(gridPriceTotalKendoFormat);
+
+        $('#grid').find('div#gridPriceSum').text('');
+        $('#grid').find('div#gridPriceSum').text(gridPriceSumKendoFormat);
+        //$('#grid').find('div#gridPriceSum').text(gridPriceTotalKendoFormat);
+
+        e.model.set('Price', '0');
+
+        console.log(0);
+    }
+
+
+    $(document).ready(function () {
+
+        $("#btnFooterValue").click(function () {
+
+            var grid = $("#grid").data("kendoGrid");
+
+            console.log(grid);
+
+            //var gridPriceFooterSum = $("#gridPriceSum").text();
+
+            var gridPriceFooterSum = $('#grid').find('div#gridPriceSum').text();
+
+            //console.log(parseFloat(gridPriceFooterSum));
+            console.log(gridPriceFooterSum);
+
+            var gridPriceAggregate = grid.dataSource.aggregates().Price;
+
+            var gridPriceSum = gridPriceAggregate.sum;
+            //var gridPriceSum = parseFloat(gridPriceAggregate.sum);
+            //var gridPriceSum = parseFloat(gridPriceAggregate.sum).toFixed(2);
+
+            var gridPriceSumKendoFormat = kendo.toString(gridPriceSum, 'n2');
+
+            var gridPriceTotal = parseFloat(0);
+
+            //Get All Data from Grid
+            var allData = grid.dataSource.data();
+            var totalNumber = allData.length;
+
+            for (var i = 0; i < totalNumber; i++) {
+
+                var currentDataItem = allData[i];
+
+                var productPrice = currentDataItem.Price;
+
+                gridPriceTotal += parseFloat(productPrice);
+            }
+
+            var gridPriceTotalKendoFormat = kendo.toString(gridPriceTotal, 'n2');
+
+            console.log(gridPriceTotalKendoFormat);
+            console.log(gridPriceSumKendoFormat);
+
+        });
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: "/Demo/ProductRead"
+                },
+                schema: {
+                    model: {
+                        id: "ProductId",
+                        fields: {
+                            ProductId: { type: "number", editable: false },
+                            Name: { type: "string", editable: false },
+                            //Select: { type: "boolean" },
+                            //Select: { type: "boolean", editable: false },
+                            //Name: { type: "string", editable: false }
+                            Price: { type: "number" }
+                        }
+                    }
+                },
+                pageSize: 10,
+                aggregate: [
+                                { field: "Price", aggregate: "sum" }
+                           ],
+                serverOperation: false,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            },
+            //change: on_change,
+            //edit: edit,
+            save: save,
+            //saveChanges: save_changes,
+            height: 350,
+            filterable: true,
+            //dataBound: OnDataBound,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            columns: [{ field: "ProductId", title: "ProductId", width: 50, hidden: true, filterable: false, sortable: false },
+                      { field: "Name", title: "Product Name", width: 250 },
+                    { field: "Price", title: "Price", format: "{0:n}", footerTemplate: "<div id='gridPriceSum' style='text-align:right;'>#= kendo.toString(sum, 'n2')# </div>", aggregates: "sum", sortable: false, groupable: false, width: 250, attributes: { style: "text-align:right;"} }
+                     ],
+            editable: true
+        }); //end of kendo grid
+
+    });
+
+</script>

@@ -12,6 +12,85 @@
     <div id="gridScriptZone">
         <script type="text/javascript">
 
+            function ProductSelectAll(e) {
+
+                var isChecked = $(e).is(':checked');
+                console.log(isChecked);
+
+                if ($(e).attr('checked')) {
+                    console.log('if');
+                    $('#gridProduct tbody input.chkProductIdSelect').attr('checked', 'checked');
+
+                    var _value = $('#gridProduct .k-grid-content table tbody input.chkProductIdSelect').attr("class");
+
+                    console.log(_value);
+
+                    //Get Product Grid
+                    var productGrid = $('#gridProduct').data('kendoGrid');
+
+                    //Get All Data from Category Grid
+                    var allData = productGrid.dataSource.data();
+
+                    for (var i = 0; i < allData.length; i++) {
+
+                        var productId = allData[i].ProductId;
+
+                        console.log(i);
+                        console.log(productId);
+
+                        //Get Product Details Grid by model id
+                        //var currentDataItem = productGrid.dataSource.get(i);
+                        var currentDataItem = productGrid.dataSource.get(productId);
+
+                        //set Product Item from Product Details Grid
+                        currentDataItem.set("Name", 'true');
+                        //allData[i].set("Name", 'true');
+                        //IsSelect
+                        currentDataItem.set("IsSelect", true);
+
+                        console.log(currentDataItem);
+
+                    }
+
+
+                } else {
+                    console.log('else');
+                    $('#gridProduct tbody input.chkProductIdSelect').removeAttr('checked');
+
+                    //                    var _value = $('#gridProduct .k-grid-content table tbody input.chkProductIdSelect').attr("class");
+
+                    //                    console.log(_value);
+
+                    //Get Product Grid
+                    var productGrid = $('#gridProduct').data('kendoGrid');
+
+                    //Get All Data from Category Grid
+                    var allData = productGrid.dataSource.data();
+
+                    for (var i = 0; i < allData.length; i++) {
+
+                        var productId = allData[i].ProductId;
+
+                        console.log(i);
+                        console.log(productId);
+
+                        //Get Product Details Grid by model id
+                        //var currentDataItem = productGrid.dataSource.get(i);
+                        var currentDataItem = productGrid.dataSource.get(productId);
+
+                        //set Product Item from Product Details Grid
+                        currentDataItem.set("Name", 'false');
+                        //allData[i].set("Name", 'false');
+                        //IsSelect
+                        currentDataItem.set("IsSelect", false);
+
+                        console.log(currentDataItem);
+
+                    }
+
+                }
+
+            }
 
             $(document).ready(function () {
 
@@ -50,15 +129,17 @@
                 $("#gridProduct").kendoGrid({
                     dataSource: {
                         transport: {
-                            read: "/Demo/ProductRead"
+                            read: "/Demo/ProductSelectRead"
                         },
                         schema: {
                             model: {
+                                id: "ProductId",
                                 fields: {
                                     ProductId: { type: "number" },
                                     Name: { type: "string" },
                                     Price: { type: "number" },
-                                    CategoryId: { type: "number" }
+                                    CategoryId: { type: "number" },
+                                    IsSelect: { type: "boolean" }
                                 }
                             }
                         },
@@ -75,7 +156,7 @@
                         refresh: true,
                         pageSizes: true
                     },
-                    columns: [{ field: "ProductId", title: "Select", template: "<input id='chkProductId_#= ProductId #' type='checkbox' name='chkProductId_#= ProductId #' value='#= ProductId #' class='check_row chkProductIdSelect' />", width: 80, filterable: false, sortable: false },
+                    columns: [{ field: "IsSelect", title: "<input id='chkProductAllId' type='checkbox' class='chkProductAll' onchange='ProductSelectAll(this);' />", template: "<input id='chkProductId_#= ProductId #' type='checkbox' name='chkProductId_#= ProductId #' #= IsSelect ? checked='checked' : '' # value='#= ProductId #' class='check_row chkProductIdSelect' />", width: 80, filterable: false, sortable: false },
                               { field: "ProductId", title: "Product Id", hidden: true, filterable: false, sortable: false },
                               { field: "Name", title: "Product Name" },
                               { field: "Price", title: "Product Price" },
@@ -108,30 +189,102 @@
 
                 });
 
-                $('input.chkProductIdSelect').live('click', function (e) {
 
-                    console.log(e);
-                    console.log(this);
+                //                $('input#chkProductAllId').live('click', function (e) {
 
-                    var valueId = $(this).attr("value");
-                    //                    var proGrid = $('#gridProduct').data('kendoGrid');
-                    //                    var dataSource = proGrid.dataSource;
-                    //                    var dataItem = proGrid.dataSource.get(valueId);
-                    //                    console.log(dataItem);
+                //                    //$("#gridProduct tbody input.chkProductIdSelect").attr("checked", this.checked);
 
-                    if ($(this).attr("checked") == "checked") {
+                //                    var isChecked = $(this).is(':checked');
 
-                        console.log(valueId);
-                        console.log('if');
+                //                    var gridProductDataSource = $('#gridProduct').data('kendoGrid').dataSource;
 
-                    } else {
+                //                    console.log(isChecked);
+                //                    console.log(gridProductDataSource);
 
-                        console.log(valueId);
-                        console.log('else');
+                //                    //        if (!isChecked) {
+                //                    //            //dataItem.set("IsSelected", false);
+                //                    //            $('input#chkProductAll').attr("checked", '');
+                //                    //            console.log(1);
+                //                    //        }
+                //                    //        else {
+                //                    //            //dataItem.set("IsSelected", true);
+                //                    //            $('input#chkProductAll').attr("checked", this.checked);
+                //                    //            console.log(2);
+                //                    //        }
 
-                    }
+                //                    if ($(this).attr('checked')) {
+                //                        console.log('if');
+                //                        $('#gridProduct .k-grid-content table tbody input.chkProductIdSelect').attr('checked', 'checked');
 
-                });
+                //                        var _value = $('#gridProduct .k-grid-content table tbody input.chkProductIdSelect').attr("class");
+
+                //                        console.log(_value);
+
+                //                        //Get Product Grid
+                //                        var productGrid = $('#gridProduct').data('kendoGrid');
+
+                //                        //Get All Data from Category Grid
+                //                        var allData = productGrid.dataSource.data();
+
+                //                        for (var i = 0; i < allData.length; i++) {
+
+                //                            var productId = allData[i].ProductId;
+
+                //                            console.log(i);
+                //                            console.log(productId);
+
+                //                            //Get Product Details Grid by model id
+                //                            //var currentDataItem = productGrid.dataSource.get(i);
+                //                            var currentDataItem = productGrid.dataSource.get(productId);
+
+                //                            //set Product Item from Product Details Grid
+                //                            currentDataItem.set("Name", 'true');
+                //                            //allData[i].set("Name", 'true');
+
+                //                            console.log(currentDataItem);
+
+                //                        }
+
+
+                //                    } else {
+                //                        console.log('else');
+                //                        $('#gridProduct .k-grid-content tbody input.chkProductIdSelect').removeAttr('checked');
+
+                //                        var _value = $('#gridProduct .k-grid-content table tbody input.chkProductIdSelect').attr("class");
+
+                //                        console.log(_value);
+
+                //                        //Get Product Grid
+                //                        var productGrid = $('#gridProduct').data('kendoGrid');
+
+                //                        //Get All Data from Category Grid
+                //                        var allData = productGrid.dataSource.data();
+
+                //                        for (var i = 0; i < allData.length; i++) {
+
+                //                            var productId = allData[i].ProductId;
+
+                //                            console.log(i);
+                //                            console.log(productId);
+
+                //                            //Get Product Details Grid by model id
+                //                            //var currentDataItem = productGrid.dataSource.get(i);
+                //                            var currentDataItem = productGrid.dataSource.get(productId);
+
+                //                            //set Product Item from Product Details Grid
+                //                            currentDataItem.set("Name", 'false');
+                //                            //allData[i].set("Name", 'true');
+
+                //                            console.log(currentDataItem);
+
+                //                        }
+
+                //                    }
+
+
+                //                });
+
+
 
             });
 

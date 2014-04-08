@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "MultiSelect Casade";
+}
+<h2>
+    MultiSelect Casadeing</h2>
+<div id="multiSelectCasadePage">
+    <div id="top">
+        Category:
+        <select id="ddlCategory" style="width: 600px;">
+        </select>
+    </div>
+    <br />
+    <div id="buttom">
+        Product:
+        <select id="ddlProduct" style="width: 600px;">
+        </select>
+    </div>
+</div>
+<script type="text/javascript">
+
+    //Getting Filter View Model
+    function GetProductMultiSelectFilter() {
+
+        var model = {};
+
+        //        model.CategoryTexts = "";
+        //        model.CategoryValues = "1";
+
+        return model;
+
+        //        var categoryValues = "1";
+
+        //        return categoryValues;
+
+        //        return {
+        //            categoryValues: ""
+        //            //categoryValues: $("#ddlCategory").data("kendoMultiSelect").value()
+        //        };
+    }
+
+    function Category_OnSelect(e) {
+
+        console.log("Category_OnSelect");
+
+        //        var category = $("#ddlCategory").data("kendoMultiSelect");
+
+        //        //var thisSelectedValueList = this.value();
+        //        var thisSelectedValueList = $("#ddlCategory").data("kendoMultiSelect").value();
+
+        //        var paramValues;
+
+        //        var dataItem = this.dataSource.view()[e.item.index()];
+
+        //        var selectedValue = dataItem.Value;
+        //        
+        //        console.log(thisSelectedValueList);
+
+        //        if (thisSelectedValueList.length == 0) {
+        //            thisSelectedValueList.push(selectedValue);
+        //        }
+
+        //        //thisSelectedValueList.push(selectedValue);
+
+
+    }
+
+    function Category_OnChange(e) {
+
+        var thisSelectedValueList = this.value();
+        var product = $("#ddlProduct").data("kendoMultiSelect");
+
+        if (thisSelectedValueList.length > 0) {
+
+            var categoryValues;
+
+            categoryValues = thisSelectedValueList.join(",");
+
+            var model = {};
+
+            model.CategoryValues = categoryValues;
+
+            product.dataSource.read(model);
+            product.enable();
+
+        }
+        else {
+            product.enable(false);
+        }
+    }
+
+    function Product_OnSelect(e) {
+        var dataView = this.dataSource.view();
+        var selectValues = this.value();
+        console.log(dataView);
+        console.log(selectValues);
+    }
+
+    $(document).ready(function () {
+
+        //Category
+        $("#ddlCategory").kendoMultiSelect({
+            placeholder: "- Select -",
+            dataTextField: "Text",
+            dataValueField: "Value",
+            //select: Category_OnSelect,
+            change: Category_OnChange,
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Demo/GetMultiSelectCategoryListRead"
+                    }
+                }
+            }
+        });
+
+        //Product
+        $("#ddlProduct").kendoMultiSelect({
+            placeholder: "- Select -",
+            dataTextField: "Text",
+            dataValueField: "Value",
+            select: Product_OnSelect,
+            autoBind: false,
+            enable: false,
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "/Demo/GetMultiSelectProductListRead",
+                        data: GetProductMultiSelectFilter
+                    }
+                }
+            }
+        });
+
+    });
+
+</script>
