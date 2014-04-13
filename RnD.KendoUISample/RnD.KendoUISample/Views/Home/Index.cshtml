@@ -206,3 +206,32 @@
         </div>
     </div>
 </div>
+<input type="text" id="txt" />
+<button id="btn">
+    click</button>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //add Common
+        $('#btn').live('click', function () {
+
+            //change the title of the dialog
+            var val = $("#txt").val();
+
+            var testVal = "Married";
+
+            var val1 = testVal.index(0);
+            var val2 = testVal.index(3);
+
+            var val3 = val.index(0);
+            var val4 = val.index(3);
+
+            alert(val1);
+            alert(val2);
+            alert(val3);
+            alert(val4);
+
+            return false;
+
+        });
+    });
+</script>
