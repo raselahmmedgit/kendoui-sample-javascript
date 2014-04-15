@@ -566,6 +566,22 @@
 
     };
 
+    //Common Message Window with messageType, messageText
+    function LoadAppMessageWindow(messageType, messageText) {
+
+        var windowTitle = messageType;
+
+        TitleAppMessageWindow(windowTitle);
+
+        var windowContent = GetAppMessageWindowContent(windowTitle, messageText);
+
+        ContentAppMessageWindow(windowContent);
+
+        //kendo ui window open
+        OpenAppMessageWindow();
+
+    };
+
     function GetAppMessageWindowContent(messageType, messageText) {
 
         var content = "<div class='" + messageType + "'><div>" + messageText + "</div></div>";
@@ -636,7 +652,7 @@
             pinned: true,
             position: { top: 100 },
             visible: false
-        })
+        });
 
         $("#appDeleteWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
@@ -646,7 +662,7 @@
             pinned: true,
             position: { top: 100 },
             visible: false
-        })
+        });
 
         $("#appMessageWindow").kendoWindow({
             draggable: false,
@@ -655,7 +671,7 @@
             minHeight: 100,
             minWidth: 300,
             visible: false
-        })
+        });
 
         $("#appProgressWindow").kendoWindow({
             title: false,
@@ -663,7 +679,7 @@
             modal: true,
             resizable: false,
             visible: false,
-            close: function (e) {
+            close: function(e) {
 
                 e.preventDefault();
                 return false;
@@ -671,7 +687,7 @@
                 console.log(e);
 
             }
-        })
+        });
 
         //add Common
         $('#lnkAddCommon').live('click', function () {
