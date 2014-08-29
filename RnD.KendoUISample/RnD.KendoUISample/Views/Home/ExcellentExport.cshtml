@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "Excellent Export";
+}
+
+<div id="basicPage">
+    <div>
+        <a download="categorylist.xls" href="javascript:;" onclick="return ExcellentExport.excel(this, 'grid', 'categorylist');">Export to Excel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+        <a download="categorylist.csv" href="javascript:;" onclick="return ExcellentExport.csv(this, 'categorylist');">Export to CSV</a>
+    </div>
+    <br/>
+    <div id="grid">
+    </div>
+</div>
+
+<script src="@Url.Content("~/Scripts/ExcellentExport/excellentexport.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+
+    function ExportToCsv(fileName, gridId) {
+
+       
+
+    }
+
+    $(document).ready(function () {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: "/Home/CategoryRead"
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            CategoryId: { type: "number" },
+                            Name: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 5,
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            height: 250,
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            columns: [{
+                field: "CategoryId",
+                title: "Category ID",
+                width: 50,
+                filterable: false
+            },
+                             {
+                                 field: "Name",
+                                 title: "Category Name",
+                                 width: 250
+                             }]
+        }); //end of kendo grid
+
+        //kendo.ui.progress($("#grid"), true)
+
+       $('#btnExportExcel').live('click', function () {
+
+            var fileName = 'BasicGrid.csv';
+            var gridId = 'grid';
+
+            ExportToExcel(fileName, gridId);
+
+        });
+
+        $('#btnExportCsv').live('click', function () {
+
+            var fileName = 'BasicGrid.csv';
+            var gridId = 'grid';
+
+            ExportToCsv(fileName, gridId);
+
+        });
+
+    });
+
+</script>

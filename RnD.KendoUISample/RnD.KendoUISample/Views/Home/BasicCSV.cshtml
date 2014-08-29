@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Basic Export CSV By JS";
+}
+<div id="basicPage">
+    <div>
+        <button id="btnExportCsv">Export To CSV</button>
+    </div>
+    <div id="grid">
+    </div>
+</div>
+
+<script src="@Url.Content("~/Scripts/ExportCsv/Downloadify/js/swfobject.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/ExportCsv/Downloadify/js/downloadify.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/ExportCsv/kendo.grid.csv.download.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+    function GetGridDataToCSV(gridId, ignoredTemplates) {
+        
+        var csv = '';
+
+        // Get access to basic grid data
+        var grid = $("#" + gridId).data("kendoGrid");
+
+        //Get All Data from Product Details Grid
+        var data = grid.dataSource.data();
+
+        //add the header row
+        for (var i = 0; i < grid.columns.length; i++) {
+            var field = grid.columns[i].field;
+            var title = grid.columns[i].title || field;
+
+            //NO DATA
+            if (!field) continue;
+
+            title = title.replace(/"/g, '""');
+            csv += '"' + title + '"';
+            if (i < grid.columns.length - 1) {
+                csv += ',';
+            }
+        }
+        csv += '\n';
+
+        //add each row of data
+        for (var row in data) {
+            
+            for (var i = 0; i < grid.columns.length; i++) {
+                var fieldName = grid.columns[i].field;
+                var template = grid.columns[i].template;
+                var exportFormat = grid.columns[i].exportFormat;
+
+                //VALIDATE COLUMN
+                if (!fieldName) continue;
+                var value = '';
+                if (fieldName.indexOf('.') >= 0) {
+                    var properties = fieldName.split('.');
+                    var value = data[row] || '';
+                    for (var j = 0; j < properties.length; j++) {
+                        var prop = properties[j];
+                        value = value[prop] || '';
+                    }
+                }
+                else {
+
+                    value = data[row][fieldName] || '';
+                }
+                if (value && template && exportFormat !== false) {
+                    value = _.isFunction(template)
+                                ? template(data[row])
+                                : kendo.template(template)(data[row]);
+                }
+
+                value = value.toString().replace(/"/g, '""');
+                csv += '"' + value + '"';
+                if (i < grid.columns.length - 1) {
+                    csv += ',';
+                }
+            }
+            
+            csv += '\n';
+        }
+
+        return csv;
+    };
+
+    function ExportToCsv(gridId, fileName) {
+
+        var csvContent = "data:text/csv;charset=utf-8,";
+
+        csvContent += GetGridDataToCSV(gridId);
+
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+
+//        var a = document.createElement('a');
+//        a.href = 'data:attachment/csv,' + csvContent;
+//        a.target = '_blank';
+//        a.download = fileName;
+//        document.body.appendChild(a);
+//        a.click();
+
+//        var encodedUri = encodeURI(csvContent);
+//        window.open(encodedUri);
+
+        
+}
+
+$(document).ready(function () {
+
+    $("#grid").kendoGrid({
+        dataSource: {
+            transport: {
+                read: "/Home/CategoryRead"
+            },
+            schema: {
+                model: {
+                    fields: {
+                        CategoryId: { type: "number" },
+                        Name: { type: "string" }
+                    }
+                }
+            },
+            pageSize: 5,
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true
+        },
+        height: 250,
+        filterable: true,
+        groupable: true,
+        sortable: true,
+        pageable: {
+            refresh: true,
+            pageSizes: true
+        },
+        columns: [{
+            field: "CategoryId",
+            title: "Category ID",
+            width: 50,
+            filterable: false
+        },
+                             {
+                                 field: "Name",
+                                 title: "Category Name",
+                                 width: 250
+                             }]
+    }); //end of kendo grid
+
+    //kendo.ui.progress($("#grid"), true)
+
+    $('#btnExportCsv').live('click', function () {
+
+        var gridId = 'grid';
+        var fileName = 'categories.csv';
+
+        ExportToCsv(gridId, fileName);
+
+    });
+
+});
+
+</script>
