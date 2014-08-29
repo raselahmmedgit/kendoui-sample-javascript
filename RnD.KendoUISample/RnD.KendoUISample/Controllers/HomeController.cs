@@ -29,6 +29,24 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        //BasicCSV
+        public ActionResult BasicCSV()
+        {
+            return View();
+        }
+
+        //BasicDownloadify
+        public ActionResult BasicDownloadify()
+        {
+            return View();
+        }
+
+        //ExcellentExport
+        public ActionResult ExcellentExport()
+        {
+            return View();
+        }
+
         public ActionResult Details()
         {
             return View();
