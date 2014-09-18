@@ -30,6 +30,45 @@ namespace RnD.KendoUISample.Helpers
             }
         }
 
+        public void BuildSorterCollection(HttpRequestBase request)
+        {
+            SortDescriptions = new List<SortDescription>();
+            var idex = 0;
+            while (true)
+            {
+                var sorter = new SortDescription()
+                {
+                    SortField = request.Params["sort[" + idex + "][field]"],
+                    SortDir = request.Params["sort[" + idex + "][dir]"]
+                };
+
+                if (sorter.SortField == null) { break; }
+                SortDescriptions.Add(sorter);
+                idex++;
+            }
+
+        }
+
+        public void BuildFilterCollection(HttpRequestBase request)
+        {
+            FilterDescriptions = new List<FilterDescription>();
+            var idex = 0;
+            while (true)
+            {
+                var filter = new FilterDescription()
+                {
+                    FilterField = request.Params["filter[filters][" + idex + "][field]"],
+                    FilterOperator = request.Params["filter[filters][" + idex + "][operator]"],
+                    FilterValue = request.Params["filter[filters][" + idex + "][value]"]
+                };
+
+                if (filter.FilterField == null) { break; }
+                FilterDescriptions.Add(filter);
+                idex++;
+            }
+
+        }
+
         public int Page { get; set; }
         public int PageSize { get; set; }
         public int Skip { get; set; }
@@ -37,7 +76,6 @@ namespace RnD.KendoUISample.Helpers
 
         public string SortOrd { get; set; }
         public string SortOn { get; set; }
-
         public List<SortDescription> SortDescriptions { get; set; }
 
         public string FilterLogic { get; set; }

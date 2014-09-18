@@ -1,0 +1,626 @@
+﻿
+<div id="grid"></div>
+<script type="text/x-kendo-template" id="detailTemplate">
+
+    <div class='detail'>
+    </div>
+
+</script>
+<script type="text/x-kendo-template" id="detailItemTemplate">
+
+    <div class='detailItem'>
+    </div>
+
+</script>
+
+<script type="text/javascript">
+
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function(key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue) {
+
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: paramValue,
+            //contentType: 'application/json; charset=utf-8',
+            beforeSend: function() {
+            },
+            success: function(result) {
+                console.log(result);
+                if (result === 'True') {
+                    KendoGridRefresh(gridId);
+                    onMessageCustomForQTA('Data Saved Successfully');
+                }
+
+            },
+            error: function(objAjaxRequest, strError) {
+                var respText = objAjaxRequest.responseText;
+                var messageText = respText;
+                onMessageCustomForQTA(messageText);
+            }
+
+        });
+
+    }
+
+    function KendoGridRefresh(gridId) {
+        //Get Grid
+        var _gridId = '#' + gridId;
+        var kdGrid = $(_gridId).data('kendoGrid');
+        kdGrid.dataSource.read();
+    }
+
+    function detailItemDistrictDropDownEditor(container, options) {
+        $('<input id="item_district_id" name="item_district_id" required data-text-field="item_district_name" data-value-field="item_district_id" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+            autoBind: false,
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: "/Pms/Quarterwisetargetachieve/getDistrictList"
+                }
+            }
+        });
+    }
+
+    function detailItemUpazilaDropDownEditor(container, options) {
+        $('<input id="item_upazila_id" name="item_upazila_id" required data-text-field="item_upazila_name" data-value-field="item_upazila_id" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+            autoBind: false,
+            cascadeFrom: "item_district_id",
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: "/Pms/Quarterwisetargetachieve/getUpazilaList"
+                }
+            }
+        });
+    }
+
+    function onMessageCustomForQTA(msg) {
+
+        $(document).ready(function() {
+            var n = noty({
+                text: msg,
+                type: 'alert',
+                layout: 'topRight',
+                closeWith: ['hover']
+            });
+        });
+    }
+
+    $(document).ready(function() {
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: function(options) {
+
+                        //var agency_id = $("#hd_agency_id").val();
+                        //var all_center_upazila = $("#hd_center_upazila").val();
+                        //var is_kpi = $("#hd_is_kpi").val();
+                        //var is_active = $("#hd_is_active").val();
+                        var agency_id = $("#agency_id").val();
+                        
+                        var all_center_upazila = $("input:radio[name='center_upazila']:checked").val();
+                        
+                        var is_kpi;
+                        if ($('input[id="is_kpi"]').is(':checked')) {
+                            is_kpi = 'yes';
+                        } else {
+                            is_kpi = 'no';
+                        }
+                        
+                        var is_active;
+                        if (is_kpi === 'yes') {
+                            is_active = 'no';
+                        } else {
+                            is_active = 'yes';
+                        }
+                        
+
+                        var url = '/Pms/Quarterwisetargetachieve/read/' + agency_id + '/' + all_center_upazila + '/' + is_kpi + '/' + is_active;
+                        //var paramValue = JSON.stringify({ agency_id: agency_id, all_center_upazila: all_center_upazila, is_kpi: is_kpi, is_active: is_active });
+                        console.log(url);
+                        $.ajax({
+                            url: url,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            cache: false,
+                            //data: paramValue,
+                            success: function(data) {
+                                //ko.mapping.fromJS(data, self.seats);
+                                options.success(data);
+                            }
+                        });
+
+                    },
+                    update: function(options) {
+
+                        //var start_date = kendo.toString(options.data.start_date, "Y-m-d");
+                        //var end_date = kendo.toString(options.data.end_date, "Y-m-d");
+                        //var start_date = kendo.parseDate(options.data.start_date, "yyyy-MM-dd");
+                        //var end_date = kendo.parseDate(options.data.end_date, "yyyy-MM-dd");
+                        var start_date = kendo.toString(kendo.parseDate(options.data.start_date, 'yyyy-MM-dd'), 'yyyy-MM-dd');
+                        var end_date = kendo.toString(kendo.parseDate(options.data.end_date, 'yyyy-MM-dd'), 'yyyy-MM-dd');
+
+
+                        var postUrl = '/Pms/Quarterwisetargetachieve/update';
+                        var paramValue = {id: options.data.master_id,
+                            quarter_id: $("#quarter_id").val(),
+                            agency_id: options.data.agency_id,
+                            all_center_upazila: options.data.center_upazila,
+                            is_kpi: options.data.is_kpi,
+                            is_active: options.data.is_active,
+                            quarter_wise_target_achieve_activity_id: options.data.quarter_wise_target_achieve_activity_id,
+                            quarter_wise_target_achieve_id: options.data.quarter_wise_target_achieve_id,
+                            activity_id: options.data.activity_id,
+                            start_date: start_date,
+                            end_date: end_date,
+                            //start_date: options.data.start_date,
+                            //end_date: options.data.end_date,
+                            plan_budget: options.data.plan_budget,
+                            actual_budget: options.data.actual_budget,
+                            total_expenses: options.data.total_expenses
+                        };
+
+                        var gridId = 'grid';
+                        console.log(paramValue);
+                        AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                        return;
+                    }
+                },
+                batch: false,
+                //serverOperation: false,
+                schema: {
+                    errors: "error_handler",
+                    model: {
+                        id: "master_id",
+                        fields: {
+                            id: {type: "number", editable: false},
+                            master_id: {type: "number", editable: false},
+                            quarter_wise_target_achieve_id: {type: "number", editable: false},
+                            pms_quarter_wise_target_achieve_activity_id: {type: "number", editable: false},
+                            activity_id: {type: "number", editable: false},
+                            sort_order: {type: "number", editable: false},
+                            main_activity_name: {type: "string", editable: false},
+                            agency_id: {type: "number", editable: false},
+                            agency_name: {type: "string", editable: false},
+                            unit_id: {type: "number", editable: false},
+                            unit_name: {type: "string", editable: false},
+                            center_upazila: {type: "string", editable: false},
+                            is_kpi: {type: "string", editable: false},
+                            is_active: {type: "string", editable: false},
+                            start_date: {type: "date"},
+                            end_date: {type: "date"},
+                            plan_budget: {type: "number"},
+                            actual_budget: {type: "number"},
+                            //total_expenses: {type: "number"}
+                            total_expenses: {type: "number", validation: {required: true, total_expenses_validation: function (input) {
+                                                                      if (input.is("[name='total_expenses']") && (parseInt($("input[type='text'][name='total_expenses']").val()) > parseInt($("input[type='text'][name='actual_budget']").val()))){
+                                                                              input.attr("data-total_expenses_validation-msg", "Total expenses should not greater than actual budget.");
+                                                                              return false;
+                                                                        }
+                                                                        return true;
+                                                                                }}}
+                        }
+                    }
+                },
+                pageSize: 10,
+                serverPaging: false,
+                serverFiltering: false,
+                serverSorting: false
+            }, //end dataSource
+            scrollable: false,
+            sortable: false,
+            filterable: false,
+            groupable: false,
+            pageable: false,
+            detailTemplate: kendo.template($("#detailTemplate").html()),
+            detailInit: detailInit,
+            detailExpand: function() {
+                //console.log("grid detailExpand Event");
+            },
+            detailCollapse: function() {
+                //console.log("grid detailCollapse Event");
+            },
+            dataBound: function() {
+                //console.log("grid dataBound Event");
+                //this.expandRow(this.tbody.find("tr.k-master-row").first());
+            },
+            columns: [{field: "id", title: "id", hidden: true},
+                {field: "master_id", title: "master_id", hidden: true},
+                {field: "quarter_wise_target_achieve_id", title: "quarter_wise_target_achieve_id", hidden: true},
+                {field: "pms_quarter_wise_target_achieve_activity_id", title: "pms_quarter_wise_target_achieve_activity_id", hidden: true},
+                {field: "activity_id", title: "activity_id", hidden: true},
+                {field: "sort_order", title: "SO"},
+                {field: "main_activity_name", title: "Main Activity Name"},
+                {field: "agency_id", title: "agency_id", hidden: true},
+                {field: "agency_name", title: "Agency Name"},
+                {field: "unit_id", title: "unit_id", hidden: true},
+                {field: "unit_name", title: "Unit"},
+                {field: "center_upazila", title: "Center/Upazila", template: "# if (center_upazila == 'center') { #Center# } else { #Upazila# } #"},
+                {field: "is_kpi", title: "is_kpi", hidden: true, template: "# if (is_kpi == 'yes') { #Yes# } else { #No# } #"},
+                {field: "is_active", title: "is_active", hidden: true, template: "# if (is_active == 'yes') { #Yes# } else { #No# } #"},
+                {field: "start_date", title: "Start Date", format: '{0:dd/MM/yyyy}'},
+                {field: "end_date", title: "End Date", format: '{0:dd/MM/yyyy}'},
+                {field: "plan_budget", title: "Plan Budget"},
+                {field: "actual_budget", title: "Actual Budget"},
+                {field: "total_expenses", title: "Total Expenses"},
+                //{field: "total_expenses", title: "Total Expenses", template: "<input id='txt_total_expenses#= master_id #' type='textbox' name='chkSelect_#= master_id #' value='#= total_expenses #' class='' onclick='master_total_expenses(#= master_id # , this)'/>"},
+                //{field: "total_expenses", title: "Total Expenses", editor: master_total_expenses_editor},
+                {command: [{name: "edit", text: "Save"}], title: "&nbsp;", width: 100}
+            ],
+            editable: "inline"
+        }); //end of kendo grid
+
+        //Details
+        function detailInit(e) {
+
+            var detailRow = e.detailRow;
+            var masterId = e.data.master_id;
+            var activityId = e.data.activity_id;
+            console.log(activityId);
+
+            detailRow.find(".detail").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: function(options) {
+
+                            var url = '/Pms/Quarterwisetargetachieve/readDetails/' + activityId;
+                            //var paramValue = JSON.stringify({ activity_id: activityId });
+
+                            $.ajax({
+                                url: url,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                cache: false,
+                                //data: paramValue,
+                                success: function(data) {
+                                    //ko.mapping.fromJS(data, self.seats);
+                                    options.success(data);
+                                }
+                            });
+
+                        },
+                        update: function(options) {
+
+                            if (masterId == null) {
+                                onMessageCustomForQTA('Could not create this without master.');
+                            }
+                            else {
+
+                                //var details_start_date = kendo.toString(options.data.details_start_date, "Y-m-d");
+                                //var details_end_date = kendo.toString(options.data.details_end_date, "Y-m-d");
+                                var details_start_date = kendo.toString(kendo.parseDate(options.data.details_start_date, 'yyyy-MM-dd'), 'yyyy-MM-dd');
+                                var details_end_date = kendo.toString(kendo.parseDate(options.data.details_end_date, 'yyyy-MM-dd'), 'yyyy-MM-dd');
+
+                                var postUrl = '/Pms/Quarterwisetargetachieve/updateDetails';
+                                var paramValue = {id: options.data.details_id,
+                                    quarter_wise_target_achieve_id: options.data.quarter_wise_target_achieve_id,
+                                    quarter_wise_target_achieve_activity_id: options.data.quarter_wise_target_achieve_activity_id,
+                                    activity_id: options.data.activity_id,
+                                    activity_details_id: options.data.activity_details_id,
+                                    start_date: details_start_date,
+                                    end_date: details_end_date,
+                                    //start_date: options.data.details_start_date,
+                                    //end_date: options.data.details_end_date,
+                                    plan_budget: options.data.details_plan_budget,
+                                    actual_budget: options.data.details_actual_budget,
+                                    total_expenses: options.data.details_total_expenses,
+                                    target: options.data.details_target,
+                                    achievement: options.data.details_achievement,
+                                    physical_progress: options.data.details_physical_progress,
+                                    procurement_method: options.data.details_procurement_method
+                                };
+
+                                var gridId = 'grid';
+                                console.log(paramValue);
+                                AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                            }
+
+                            return;
+                        }
+                    },
+                    batch: false,
+                    //serverOperation: false,
+                    schema: {
+                        errors: "error_handler",
+                        model: {
+                            id: "details_id",
+                            fields: {
+                                id: {type: "number", editable: false},
+                                details_id: {type: "number", editable: false},
+                                quarter_wise_target_achieve_id: {type: "number", editable: false},
+                                quarter_wise_target_achieve_activity_id: {type: "number", editable: false},
+                                activity_id: {type: "number", editable: false},
+                                activity_details_id: {type: "number", editable: false},
+                                details_center_upazila: {type: "string", editable: false},
+                                details_sort_order: {type: "number", editable: false},
+                                details_activity_name: {type: "string", editable: false},
+                                details_unit_id: {type: "number", editable: false},
+                                details_unit_name: {type: "string", editable: false},
+                                details_start_date: {type: "date"},
+                                details_end_date: {type: "date"},
+                                details_plan_budget: {type: "number"},
+                                details_actual_budget: {type: "number"},
+                                //details_total_expenses: {type: "number"},
+                                details_total_expenses: {type: "number", validation: {required: true, details_total_expenses_validation: function (input) {
+                                                                      if (input.is("[name='details_total_expenses']") && (parseInt($("input[type='text'][name='details_total_expenses']").val()) > parseInt($("input[type='text'][name='details_actual_budget']").val()))){
+                                                                              input.attr("data-details_total_expensess_validation-msg", "Total expenses should not greater than actual budget.");
+                                                                              return false;
+                                                                        }
+                                                                        return true;
+                                                                                }}},
+                                details_target: {type: "number"},
+                                details_achievement: {type: "number"},
+                                details_physical_progress: {type: "number", editable: false},
+                                details_procurement_method: {type: "string"}
+                            }
+                        }
+                    },
+                    pageSize: 10,
+                    serverPaging: false,
+                    serverSorting: false,
+                    serverFiltering: false
+                },
+                scrollable: true,
+                sortable: false,
+                filterable: false,
+                pageable: false,
+                detailTemplate: kendo.template($("#detailItemTemplate").html()),
+                detailInit: detailItemInit,
+                detailExpand: function() {
+                    //console.log("detailGrid detailExpand Event");
+                },
+                detailCollapse: function() {
+                    //console.log("detailGrid detailCollapse Event");
+                },
+                dataBound: function() {
+                    //console.log("detailGrid dataBound Event");
+                },
+                columns: [
+                    {field: "id", title: "id", hidden: true},
+                    {field: "details_id", title: "details_id", hidden: true},
+                    {field: "quarter_wise_target_achieve_id", title: "quarter_wise_target_achieve_id", hidden: true},
+                    {field: "quarter_wise_target_achieve_activity_id", title: "quarter_wise_target_achieve_activity_id", hidden: true},
+                    {field: "activity_id", title: "activity_id", hidden: true},
+                    {field: "activity_details_id", title: "activity_details_id", hidden: true},
+                    {field: "details_center_upazila", title: "details_center_upazila", hidden: true},
+                    {field: "details_sort_order", title: "SO"},
+                    {field: "details_activity_name", title: "Activity Name"},
+                    {field: "details_unit_id", title: "details_unit_id", hidden: true},
+                    {field: "details_unit_name", title: "Unit Name"},
+                    {field: "details_start_date", title: "Start Date", format: '{0:dd/MM/yyyy}'},
+                    {field: "details_end_date", title: "End Date", format: '{0:dd/MM/yyyy}'},
+                    {field: "details_plan_budget", title: "Plan Budget"},
+                    {field: "details_actual_budget", title: "Actual Budget"},
+                    {field: "details_total_expenses", title: "Total Expenses"},
+                    {field: "details_target", title: "Target"},
+                    {field: "details_achievement", title: "Achievement"},
+                    {field: "details_physical_progress", title: "Physical Progress", template: "#=details_physical_progress# %"},
+                    {field: "details_procurement_method", title: "Procurement Method"},
+                    {command: [{name: "edit", text: "Save"}], title: "&nbsp;", width: 100}
+                ],
+                editable: "inline"
+            });
+
+
+        } //end of detailInit
+
+        function detailItemInit(e) {
+
+            var detailRow = e.detailRow;
+            var detailsId = e.data.details_id;
+            var detailsCenterUpazila = e.data.details_center_upazila;
+
+            if (detailsCenterUpazila === 'upazila') {
+
+                detailRow.find(".detailItem").kendoGrid({
+                    dataSource: {
+                        transport: {
+                            read: function(options) {
+
+                                var url = '/Pms/Quarterwisetargetachieve/readDetailsItem/' + detailsId;
+                                //var paramValue = JSON.stringify({ quarter_wise_target_achieve_activity_details_id: activityDetailsId });
+
+                                $.ajax({
+                                    url: url,
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    cache: false,
+                                    //data: options.data,
+                                    success: function(data) {
+                                        //ko.mapping.fromJS(data, self.seats);
+                                        options.success(data);
+                                    }
+                                });
+
+                            },
+                            update: function(options) {
+
+                                if (detailsId == 0 && detailsId == null && detailsId == 'undefined')
+                                {
+                                    onMessageCustomForQTA('Could not update this without details.');
+                                }
+                                else
+                                {
+
+                                    var district_id, upazila_id;
+
+                                    if (options.data.district == 'undefined' && options.data.upazila == 'undefined') {
+                                        district_id = options.data.item_district_id;
+                                        upazila_id = options.data.item_upazila_id;
+                                    }
+                                    else {
+
+                                        district_id = options.data.upazila.item_district_id;
+
+                                        upazila_id = options.data.upazila.item_upazila_id;
+                                    }
+
+                                    var postUrl = '/Pms/Quarterwisetargetachieve/updateDetailsItem';
+                                    var paramValue = {id: options.data.item_id,
+                                        quarter_wise_target_achieve_id: options.data.quarter_wise_target_achieve_id,
+                                        quarter_wise_target_achieve_activity_id: options.data.quarter_wise_target_achieve_activity_id,
+                                        quarter_wise_target_achieve_activity_details_id: options.data.quarter_wise_target_achieve_activity_details_id,
+                                        district_id: district_id,
+                                        upazila_id: upazila_id,
+                                        target: options.data.item_target,
+                                        achievement: options.data.item_achievement
+                                    };
+
+                                    var gridId = 'grid';
+                                    console.log(paramValue);
+                                    AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                                }
+                                return;
+                            },
+                            destroy: function(options) {
+
+                                if (detailsId == 0 && detailsId == null && detailsId == 'undefined')
+                                {
+                                    onMessageCustomForQTA('Could not delete this without details.');
+                                }
+                                else
+                                {
+
+                                    var postUrl = '/Pms/Quarterwisetargetachieve/destroyDetailsItem';
+                                    var paramValue = {id: options.data.id};
+
+                                    var gridId = 'grid';
+                                    console.log(paramValue);
+                                    AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                                }
+                                return;
+                            },
+                            create: function(options) {
+
+                                if (detailsId == 0 && detailsId == null && detailsId == 'undefined')
+                                {
+                                    onMessageCustomForQTA('Could not insert this without details.');
+                                }
+                                else
+                                {
+
+                                    var district_id, upazila_id;
+
+                                    if (options.data.district == null && options.data.upazila == null && options.data.district == 'undefined' && options.data.upazila == 'undefined') {
+
+                                        district_id = options.data.item_district_id;
+                                        upazila_id = options.data.item_upazila_id;
+                                    }
+                                    else {
+
+                                        if (options.data.district == null && options.data.district == 'undefined') {
+                                            district_id = options.data.item_district_id;
+                                        }
+                                        else {
+                                            district_id = options.data.district.item_district_id;
+                                        }
+
+                                        upazila_id = options.data.upazila.item_upazila_id;
+                                    }
+
+                                    var postUrl = '/Pms/Quarterwisetargetachieve/createDetailsItem';
+                                    var paramValue = {quarter_wise_target_achieve_id: options.data.quarter_wise_target_achieve_id,
+                                        quarter_wise_target_achieve_activity_id: options.data.quarter_wise_target_achieve_activity_id,
+                                        quarter_wise_target_achieve_activity_details_id: detailsId,
+                                        district_id: district_id,
+                                        upazila_id: upazila_id,
+                                        target: options.data.item_target,
+                                        achievement: options.data.item_achievement
+                                    };
+
+                                    var gridId = 'grid';
+                                    console.log(paramValue);
+                                    AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                                }
+                                return;
+                            }
+                        },
+                        batch: false,
+                        //serverOperation: false,
+                        schema: {
+                            errors: "error_handler",
+                            model: {
+                                id: "id",
+                                fields: {
+                                    id: {type: "number", editable: false},
+                                    item_id: {type: "number", editable: false},
+                                    quarter_wise_target_achieve_id: {type: "number", editable: false},
+                                    quarter_wise_target_achieve_activity_id: {type: "number", editable: false},
+                                    quarter_wise_target_achieve_activity_details_id: {type: "number", editable: false},
+                                    district: {defaultValue: {item_district_id: 1, item_district_name: 'Dhaka'}, validation: {required: true, min: 1}},
+                                    item_district_id: {type: "number", editable: false},
+                                    item_district_name: {type: "string", editable: false},
+                                    upazila: {defaultValue: {item_upazila_id: 1, item_upazila_name: 'Savar'}, validation: {required: true, min: 1}},
+                                    item_upazila_id: {type: "number", editable: false},
+                                    item_upazila_name: {type: "string", editable: false},
+                                    item_target: {type: "number"},
+                                    item_achievement: {type: "number"}
+                                }
+                            }
+                        },
+                        pageSize: 10,
+                        serverPaging: false,
+                        serverSorting: false,
+                        serverFiltering: false
+                    },
+                    scrollable: false,
+                    sortable: false,
+                    filterable: false,
+                    pageable: false,
+                    toolbar: [{name: "create", text: "Add"}],
+                    columns: [
+                        {field: "id", title: "id", hidden: true},
+                        {field: "item_id", title: "item_id", hidden: true},
+                        {field: "quarter_wise_target_achieve_id", title: "quarter_wise_target_achieve_id", hidden: true},
+                        {field: "quarter_wise_target_achieve_activity_id", title: "quarter_wise_target_achieve_activity_id", hidden: true},
+                        {field: "quarter_wise_target_achieve_activity_details_id", title: "quarter_wise_target_achieve_activity_details_id", hidden: true},
+                        {field: "district", title: "District", width: "180px", editor: detailItemDistrictDropDownEditor, template: "#=item_district_name#"},
+                        //{ field: "item_district_id", title: "District", width: "180px", editor: detailItemDistrictDropDownEditor, template: "#=item_district_name#" },
+                        {field: "item_district_id", title: "item_district_id", hidden: true},
+                        {field: "item_district_name", title: "item_district_name", hidden: true},
+                        {field: "upazila", title: "Upazila", width: "180px", editor: detailItemUpazilaDropDownEditor, template: "#=item_upazila_name#"},
+                        //{ field: "item_upazila_id", title: "Upazila", width: "180px", editor: detailItemUpazilaDropDownEditor, template: "#=item_upazila_name#" },
+                        {field: "item_upazila_id", title: "item_upazila_id", hidden: true},
+                        {field: "item_upazila_name", title: "item_upazila_name", hidden: true},
+                        {field: "item_target", title: "Target"},
+                        {field: "item_achievement", title: "Achievement"},
+                        {command: [{name: "edit", text: "Save"}, {name: "destroy", text: "Delete"}], title: "&nbsp;", width: 180}
+                    ],
+                    editable: "inline"
+                });
+
+            }
+            else {
+                onMessageCustomForQTA('Could not details for center.');
+            }
+
+        } //end of detailItemInit
+
+    });
+
+</script>

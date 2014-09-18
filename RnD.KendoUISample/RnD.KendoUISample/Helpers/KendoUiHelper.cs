@@ -27,6 +27,13 @@ namespace RnD.KendoUISample.Helpers
                     //If sort and paging
                     gridData = sortCollection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
                 }
+                if (requestParams.FilterField.IsNotEmpty() && requestParams.FilterOperator.IsNotEmpty() && requestParams.FilterValue.IsNotEmpty())
+                {
+                    var filterCollection = Filter<T>(collection, requestParams.FilterField, requestParams.FilterOperator, requestParams.FilterValue);
+
+                    //If sort and paging
+                    gridData = filterCollection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
+                }
                 else
                 {
                     //If only paging
@@ -60,6 +67,42 @@ namespace RnD.KendoUISample.Helpers
                     return collection.AsQueryable<T>().OrderByDescending<T, object>(sortExpression);
 
             }
+        }
+
+        private static IQueryable<T> Filter<T>(IQueryable<T> collection, string filterField, string filterOperator, string filterValue)
+        {
+            IQueryable<T> filteredCollection = from item in collection select item;
+
+            Func<T, bool> expression = item =>
+            {
+                var itemValue = item.GetType()
+                    .GetProperty(filterField)
+                    .GetValue(item, null);
+
+                if (itemValue == null)
+                {
+                    return false;
+                }
+
+                var value = filterValue;
+                switch (filterOperator)
+                {
+                    case "eq":
+                        return itemValue.ToString() == value;
+                    case "startswith":
+                        return itemValue.ToString().StartsWith(value);
+                    case "contains":
+                        return itemValue.ToString().Contains(value);
+                    case "endswith":
+                        return itemValue.ToString().EndsWith(value);
+                }
+
+                return true;
+            };
+
+            filteredCollection = filteredCollection.Where(expression).AsQueryable();
+
+            return filteredCollection;
         }
 
         public class KendoGridResult<T>

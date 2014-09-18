@@ -1,41 +1,46 @@
 ﻿@{
-    ViewBag.Title = "Excellent Export";
+    ViewBag.Title = "Server Paging, Sorting And Filter";
 }
-
-<div id="basicPage">
-    <div>
-        <a  class="button" download="categorylist.xls" href="javascript:;" onclick="return ExcellentExport.excel(this, 'grid', 'categorylist');">Export to Excel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-        <a  class="button" download="categorylist.csv" href="javascript:;" onclick="return ExcellentExport.csv(this, 'categorylist');">Export to CSV</a>
-    </div>
-    <br/>
-    <div id="grid">
+<div id="indexPage">
+    <h2>
+        Kendo UI Grid Server Paging, Sorting And Filter
+    </h2>
+    <div id="gridWithParam">
     </div>
 </div>
-
-<script src="@Url.Content("~/Scripts/ExcellentExport/excellentexport.min.js")" type="text/javascript"></script>
-
 <script type="text/javascript">
-
-
-    function ExportToCsv(fileName, gridId) {
-
-       
-
-    }
 
     $(document).ready(function () {
 
-        $("#grid").kendoGrid({
+        var filterOption = {
+            extra: false,
+            operators: {
+                string: {
+                    eq: "Is Equal To",
+                    startswith: "Starts With",
+                    contains: "Contains",
+                    endswith: "Ends With"
+                }
+            }
+        };
+
+        $("#gridWithParam").kendoGrid({
             dataSource: {
                 transport: {
-                    read: "/Home/CategoryRead"
+                    read: "/Grid/CategoryReadWithParam"
                 },
                 schema: {
+                    data: function (data) {
+                        return data.Data;
+                    },
                     model: {
                         fields: {
                             CategoryId: { type: "number" },
                             Name: { type: "string" }
                         }
+                    },
+                    total: function (data) {
+                        return data.Total;
                     }
                 },
                 pageSize: 5,
@@ -48,6 +53,10 @@
             groupable: true,
             sortable: true,
             pageable: {
+                input: true,
+                numeric: true,
+                info: true,
+                previousNext: true,
                 refresh: true,
                 pageSizes: true
             },
@@ -60,29 +69,10 @@
                              {
                                  field: "Name",
                                  title: "Category Name",
-                                 width: 250
+                                 width: 250, filterable: filterOption
                              }]
         }); //end of kendo grid
 
-        //kendo.ui.progress($("#grid"), true)
-
-       $('#btnExportExcel').live('click', function () {
-
-            var fileName = 'BasicGrid.csv';
-            var gridId = 'grid';
-
-            ExportToExcel(fileName, gridId);
-
-        });
-
-        $('#btnExportCsv').live('click', function () {
-
-            var fileName = 'BasicGrid.csv';
-            var gridId = 'grid';
-
-            ExportToCsv(fileName, gridId);
-
-        });
 
     });
 

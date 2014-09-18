@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Controllers\DemoController.cs" />
+    <Compile Include="Controllers\GridController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KendoUIController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -75,8 +76,11 @@
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\KendoGridPost.cs" />
     <Compile Include="Helpers\KendoUiHelper.cs" />
+    <Compile Include="Helpers\LinqFilteringUtility.cs" />
+    <Compile Include="Helpers\LinqSortingUtility.cs" />
     <Compile Include="Helpers\SelectListItemExtension.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="ViewModels\AppViewModels.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\DADViewModels.cs" />
     <Compile Include="Global.asax.cs">
@@ -823,6 +827,13 @@
     <Content Include="Views\Home\BasicCSV.cshtml" />
     <Content Include="Views\Home\ExcellentExport.cshtml" />
     <Content Include="Views\Home\BasicDownloadify.cshtml" />
+    <Content Include="Views\Grid\OneLevel.cshtml" />
+    <Content Include="Views\Grid\TwoLevel.cshtml" />
+    <Content Include="Views\Grid\ThreeLevel.cshtml" />
+    <Content Include="Views\Grid\LikeIAPP.cshtml" />
+    <Content Include="Views\Demo\ServerPageSortFilterFinal.cshtml" />
+    <Content Include="Views\Grid\ServerPageSortFilter.cshtml" />
+    <Content Include="Views\Grid\Index.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

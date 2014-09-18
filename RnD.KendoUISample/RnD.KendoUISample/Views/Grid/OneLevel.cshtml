@@ -1,0 +1,370 @@
+﻿@{
+    ViewBag.Title = "One Level CRUD";
+}
+<div id="basicPage">
+    <div id="grid">
+    </div>
+    <hr />
+    <div id="grid2">
+    </div>
+</div>
+<script type="text/javascript">
+
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function AjaxJsonPost(postUrl) {
+
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function () {
+                OpenAppProgressWindow();
+            },
+            success: function (result) {
+                var messageType = result.messageType;
+                var messageText = result.messageText;
+                console.log(messageType);
+                console.log(messageText);
+            },
+            error: function (objAjaxRequest, strError) {
+                var respText = objAjaxRequest.responseText;
+                var messageText = respText;
+                console.log(messageText);
+            }
+
+        });
+
+    }
+
+    function AjaxJsonPostWithParam(postUrl, paramValue) {
+
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: paramValue,
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function () {
+            },
+            success: function (result) {
+                var messageType = result.messageType;
+                var messageText = result.messageText;
+                console.log(messageType);
+                console.log(messageText);
+            },
+            error: function (objAjaxRequest, strError) {
+                var respText = objAjaxRequest.responseText;
+                var messageText = respText;
+                console.log(messageText);
+            }
+
+        });
+
+    }
+
+    function AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue) {
+
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: paramValue,
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function () {
+            },
+            success: function (result) {
+                console.log(result);
+                if (result == 'True') {
+                    KendoGridRefresh(gridId);
+                }
+                
+            },
+            error: function (objAjaxRequest, strError) {
+                var respText = objAjaxRequest.responseText;
+                var messageText = respText;
+                console.log(messageText);
+            }
+
+        });
+
+    }
+
+    function KendoGridRefresh(gridId) {
+        //Get Grid
+        var _gridId = '#' + gridId;
+        var kdGrid = $(_gridId).data('kendoGrid');
+        kdGrid.dataSource.read();
+    }
+
+    $(document).ready(function () {
+
+        ///////////////////////----////////////////////////
+
+        //        $("#grid").kendoGrid({
+        //            dataSource: {
+        //                transport: {
+        //                    read: {
+        //                        url: "/Grid/MasterRead",
+        //                        //contentType:"application/json",
+        //                        dataType: "json",
+        //                        type: "POST"
+        //                    },
+        //                    update: {
+        //                        url: "/Grid/MasterUpdate",
+        //                        //contentType: "application/json",
+        ////                        url: function (models) {
+        ////                            console.log(models);
+        ////                            //console.log(models[0]);
+        ////                            //return "/Grid/MasterUpdate?model=" + model;
+        ////                            var postUrl = '/Grid/MasterUpdate';
+
+        ////                            //var model = {};
+        ////                            //model.MasterId = models[0].MasterId;
+        ////                            //model.MasterName = models[0].MasterName;
+
+        ////                            var paramValue = JSON.stringify({ models: models });
+        ////                            
+        ////                            AjaxJsonPostWithParam(postUrl, paramValue);
+        //                        //                        },
+        //                        dataType: "json",
+        //                        type: "POST"
+        //                    },
+        //                    destroy: {
+        //                        url: "/Grid/MasterDestroy",
+        //                        //contentType: "application/json",
+        //                        dataType: "json",
+        //                        type: "POST"
+        //                    },
+        //                    create: {
+        //                        url: "/Grid/MasterCreate",
+        //                        //contentType:"application/json",
+        //                        dataType: "json",
+        //                        type: "POST"
+        //                    }//,
+        ////                    parameterMap: function (options, operation) {
+
+        //////                        return kendo.stringify(options.models);
+
+        ////                        if (operation !== "read" && options.models) {
+        ////                            return { models: kendo.stringify(options.models) };
+        ////                        }
+
+        //////                        if (operation != "read") {
+        //////                            console.log("read");
+        //////                            console.log(options.models);
+        //////                        }
+
+        //////                        if (operation != "update") {
+        //////                            console.log("update");
+        //////                            console.log(options.models);
+        //////                        }
+
+        //////                        if (operation != "destroy") {
+        //////                            console.log("destroy");
+        //////                            console.log(options.models);
+        //////                        }
+
+        //////                        if (operation != "create") {
+        //////                            console.log("create");
+        //////                            console.log(options.models);
+        //////                        }
+
+        ////                        //                        if (operation != "read") {
+        ////                        //                            
+        ////                        //                            // post the products so the ASP.NET DefaultModelBinder will understand them:
+
+        ////                        //                            // models[0].MasterId = 1;
+        ////                        //                            // models[0].MasterName = 'Master Name';
+
+        ////                        //                            var result = {};
+
+        ////                        //                            for (var i = 0; i < data.models.length; i++) {
+        ////                        //                                var model = data.models[i];
+
+        ////                        //                                for (var member in product) {
+        ////                        //                                    result["models[" + i + "]." + member] = model[member];
+        ////                        //                                }
+        ////                        //                            }
+
+        ////                        //                            return result;
+        ////                        //                            
+        ////                        //                        } else {
+        ////                        //                            return JSON.stringify(data);
+        ////                        //                        }
+
+        ////                    } // end transport
+        //                },
+        //                batch: true,
+        //                serverOperation: false,
+        //                schema: {
+        //                    errors: "error_handler",
+        //                    model: {
+        //                        id: "MasterId",
+        //                        fields: {
+        //                            MasterId: { type: "number" },
+        //                            MasterName: { type: "string" }
+        //                        }
+        //                    }
+        //                },
+        //                pageSize: 5,
+        //                serverPaging: true,
+        //                serverFiltering: true,
+        //                serverSorting: true
+        //            }, //end dataSource
+        //            height: 250,
+        //            filterable: true,
+        //            groupable: true,
+        //            sortable: true,
+        //            pageable: {
+        //                refresh: true,
+        //                pageSizes: true
+        //            },
+        //            toolbar: ["create"],
+        //            columns: [{ field: "MasterId", title: "Master Id", width: 50, filterable: false },
+        //                { field: "MasterName", title: "Master Name", width: 250 },
+        //                { command: ["edit", "destroy"], title: "&nbsp;", width: 200 }
+        //            ],
+        //            editable: "inline"
+        //        }); //end of kendo grid
+
+        //kendo.ui.progress($("#grid"), true)
+
+        ///////////////////////----////////////////////////
+
+        ///////////////////////////////////////////////
+
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: function (options) {
+
+                        $.ajax({
+                            url: "/Grid/MasterRead",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            cache: false,
+                            //data: options.data,
+                            success: function (data) {
+                                //ko.mapping.fromJS(data, self.seats);
+                                options.success(data);
+                            }
+                        });
+
+                    },
+                    update: function (options) {
+
+                        var model = {};
+                        model.MasterId = options.data.MasterId;
+                        model.MasterName = options.data.MasterName;
+                        var postUrl = '/Grid/MasterUpdate';
+                        var paramValue = JSON.stringify({ model: model });
+                        var gridId = 'grid';
+                        AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                        //                        $.ajax({
+                        //                            type: 'POST',
+                        //                            url: "/Grid/MasterUpdate",
+                        //                            data: { 'model': options.data },
+                        //                            success: function (response) {
+                        //                                // do nothing
+                        //                                console.log("Successfully Saved.");
+                        //                            },
+                        //                            error: function (repsonse) {
+                        //                                console.log("Manage: UpdateReportName -> Ajax Error!");
+                        //                            }
+                        //                        });
+
+                        return;
+                    },
+                    destroy: function (options) {
+
+                        var model = {};
+                        model.MasterId = options.data.MasterId;
+                        model.MasterName = options.data.MasterName;
+                        var postUrl = '/Grid/MasterDestroy';
+                        var paramValue = JSON.stringify({ model: model });
+                        var gridId = 'grid';
+                        AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                        //                        $.ajax({
+                        //                            type: 'POST',
+                        //                            url: "/Grid/MasterUpdate",
+                        //                            data: { 'model': options.data },
+                        //                            success: function (response) {
+                        //                                // do nothing
+                        //                                console.log("Successfully Saved.");
+                        //                            },
+                        //                            error: function (repsonse) {
+                        //                                console.log("Manage: UpdateReportName -> Ajax Error!");
+                        //                            }
+                        //                        });
+
+                        return;
+                    },
+                    create: function (options) {
+
+                        var model = {};
+                        model.MasterId = options.data.MasterId;
+                        model.MasterName = options.data.MasterName;
+                        var postUrl = '/Grid/MasterCreate';
+                        var paramValue = JSON.stringify({ model: model });
+                        var gridId = 'grid';
+                        AjaxJsonPostWithParamForKendoGrid(gridId, postUrl, paramValue);
+
+                        return;
+                    }
+                },
+                batch: false,
+                //serverOperation: false,
+                schema: {
+                    errors: "error_handler",
+                    model: {
+                        id: "MasterId",
+                        fields: {
+                            MasterId: { type: "number", editable: false },
+                            MasterName: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 5,
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            }, //end dataSource
+            height: 250,
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            toolbar: ["create"],
+            columns: [{ field: "MasterId", title: "Master Id", width: 50, filterable: false },
+                { field: "MasterName", title: "Master Name", width: 250 },
+                { command: ["edit", "destroy"], title: "&nbsp;", width: 200 }
+            ],
+            editable: "inline"
+        }); //end of kendo grid
+
+        ///////////////////////////////////////////////
+
+    });
+
+</script>
+
+

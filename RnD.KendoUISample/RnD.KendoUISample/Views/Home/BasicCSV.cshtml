@@ -3,15 +3,13 @@
 }
 <div id="basicPage">
     <div>
-        <button id="btnExportCsv">Export To CSV</button>
+        <button id="btnExportCsv" class="button">Export To CSV</button>
     </div>
     <div id="grid">
     </div>
 </div>
 
-<script src="@Url.Content("~/Scripts/ExportCsv/Downloadify/js/swfobject.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/ExportCsv/Downloadify/js/downloadify.min.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/ExportCsv/kendo.grid.csv.download.js")" type="text/javascript"></script>
+
 
 <script type="text/javascript">
 
@@ -23,7 +21,8 @@
         var grid = $("#" + gridId).data("kendoGrid");
 
         //Get All Data from Product Details Grid
-        var data = grid.dataSource.data();
+        //var data = grid.dataSource.data();
+        var data = grid.dataSource.view();
 
         //add the header row
         for (var i = 0; i < grid.columns.length; i++) {

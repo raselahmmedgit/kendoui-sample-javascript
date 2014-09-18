@@ -72,6 +72,12 @@ namespace RnD.KendoUISample.Controllers
             return View();
         }
 
+        //ServerPageSortFilter
+        public ActionResult ServerPageSortFilterFinal()
+        {
+            return View();
+        }
+
         //GridRowSelect
         public ActionResult GridRowSelect()
         {
