@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using RnD.KendoUISample.Models;
 using RnD.KendoUISample.ViewModels;
 using RnD.KendoUISample.Helpers;
+using System.IO;
 
 namespace RnD.KendoUISample.Controllers
 {
@@ -41,6 +43,67 @@ namespace RnD.KendoUISample.Controllers
         public ActionResult ServerPageSortFilter()
         {
             return View();
+        }
+
+        //VCardExport
+        public ActionResult VCardExport()
+        {
+            return View();
+        }
+
+        //[HttpPost]
+        [HttpGet]
+        public ActionResult ExportToVCardOnClick(int id)
+        //public void ExportToVCardOnClick(int id)
+        {
+            ////Export To vCard 
+            //MemoryStream output = new MemoryStream();
+            //StreamWriter writer = new StreamWriter(output, Encoding.UTF8);
+
+            //writer.Write("BEGIN:VCARD");
+            //writer.Write("VERSION:2.1");
+
+            //writer.Write("N:" + "Rasel" + ";" + "Bappi");
+            //writer.Write("FN:" + "Md. Toffazal Hossain");
+            //writer.Write("EMAIL;PREF;INTERNET:" + "rasel.bappi@gmail.com");
+            //writer.WriteLine();
+
+            //writer.Write("END:VCARD");
+            //writer.Flush();
+            //output.Position = 0;
+
+            //File(output, "text/x-vcard", "raselbappi.vcf");
+
+            //return Json(Boolean.TrueString);
+
+            var card = new VCardViewModel
+            {
+                FirstName = "FirstName",
+                LastName = "LastName",
+                StreetAddress = "StreetAddress",
+                City = "City",
+                CountryName = "CountryName",
+
+                Mobile = "Mobile",
+                Phone = "Phone",
+                Email = "Email",
+            };
+
+            var models = card;
+            string title = "card";
+            Session[title] = models;
+
+            return Json(Boolean.TrueString, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ExportToVCard(string title)
+        {
+            ////Export To vCard 
+            // Get the vCard from seession.
+
+            var card = (VCardViewModel)Session[title];
+
+            return new VCardResultHelper(card);
         }
 
         #region CRUD Master
@@ -276,7 +339,7 @@ namespace RnD.KendoUISample.Controllers
             //return itemViewModel.AsQueryable();
             return itemViewModel.ToList();
         }
-        
+
         #endregion
 
         #region Server Side Page Sort Filter Gird

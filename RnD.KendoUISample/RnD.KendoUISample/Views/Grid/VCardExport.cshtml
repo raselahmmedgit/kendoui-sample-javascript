@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "vCard Export";
+}
+<fieldset>
+    <legend>VCard Export:</legend>@Html.ValidationSummary(true)
+    <div class="editor-field">
+        <strong>vCard Export: </strong>
+        <button id="btnExportVCard">
+            Export To vCard
+        </button>
+        <a href="/Grid/ExportToVCardOnClick/0">Export To vCard</a> <a id="lnkExportVCard"
+            href="#">Export To vCard</a>
+    </div>
+</fieldset>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //add Common
+        $('#btnExportVCard').live('click', function () {
+
+            var viewUrl = '/Grid/ExportToVCardOnClick/0';
+
+            console.log(viewUrl);
+            //            $.ajax({
+            //                url: viewUrl,
+            //                type: 'POST',
+            //                //dataType: 'json',
+            //                //contentType: 'application/json; charset=utf-8',
+            //                success: function (data) {
+            //                    console.log(data);
+            //                },
+            //                error: function (objAjaxRequest, strError) {
+            //                    var respText = objAjaxRequest.responseText;
+            //                    console.log(respText);
+            //                }
+
+            //            });
+
+            //            $.get(viewUrl, function (data) {
+            //                console.log(data);
+            //                return data;
+            //            });
+
+            $.get(viewUrl, null,
+                        function (data) {
+                            console.log(data);
+                            //location.href = res.url;
+                            location.href = '/Grid/ExportToVCard?title=card';
+                        });
+
+            return false;
+
+        });
+
+        $('#lnkExportVCard').live('click', function () {
+
+            var viewUrl = '/Grid/ExportToVCardOnClick';
+
+            console.log(viewUrl);
+
+            viewUrl = viewUrl + '/0';
+
+            console.log(viewUrl);
+
+            $(this).attr('href').replace('#', viewUrl);
+
+            //return false;
+
+        });
+
+    });
+</script>
