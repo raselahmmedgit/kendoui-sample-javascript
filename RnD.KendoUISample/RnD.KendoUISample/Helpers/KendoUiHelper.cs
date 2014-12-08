@@ -19,26 +19,34 @@ namespace RnD.KendoUISample.Helpers
 
             try
             {
+                //If only paging
+                var skipCollection = collection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList().AsQueryable();
+
                 //If the sort Order is provided perform a sort on the specified column
                 if (requestParams.SortOrd.IsNotEmpty())
                 {
-                    var sortCollection = Sort<T>(collection, requestParams.SortOn, requestParams.SortOrd);
+                    //var sortCollection = Sort<T>(collection, requestParams.SortOn, requestParams.SortOrd);
+                    var sortCollection = Sort<T>(skipCollection, requestParams.SortOn, requestParams.SortOrd);
 
                     //If sort and paging
-                    gridData = sortCollection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
+                    //gridData = sortCollection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
+                    gridData = sortCollection.ToList();
                 }
                 if (requestParams.FilterField.IsNotEmpty() && requestParams.FilterOperator.IsNotEmpty() && requestParams.FilterValue.IsNotEmpty())
                 {
-                    var filterCollection = Filter<T>(collection, requestParams.FilterField, requestParams.FilterOperator, requestParams.FilterValue);
+                    //var filterCollection = Filter<T>(collection, requestParams.FilterField, requestParams.FilterOperator, requestParams.FilterValue);
+                    var filterCollection = Filter<T>(skipCollection, requestParams.FilterField, requestParams.FilterOperator, requestParams.FilterValue);
 
                     //If sort and paging
-                    gridData = filterCollection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
+                    //gridData = filterCollection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
+                    gridData = filterCollection.ToList();
                 }
-                else
-                {
-                    //If only paging
-                    gridData = collection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
-                }
+                //else
+                //{
+                //    //If only paging
+                //    //gridData = collection.Skip(requestParams.Skip).Take(requestParams.PageSize).ToList();
+                //    //gridData = skipCollection.ToList();
+                //}
             }
             catch
             {

@@ -196,6 +196,18 @@ namespace RnD.KendoUISample.Controllers
             //return Json(models);
         }
 
+        public JsonResult ProductReadWithParam(KendoGridPost request)
+        {
+            var products = GetProducts().AsQueryable();
+            //List<Product> models = GetProducts();
+
+            //var models = GetProducts();
+            var models = KendoUiHelper.ParseGridData<Product>(products, request);
+
+            return Json(models, JsonRequestBehavior.AllowGet);
+            //return Json(models);
+        }
+
         public JsonResult CategoryReadWithParamForFilter(KendoGridPost request)
         {
             var categories = GetCategories().AsQueryable();

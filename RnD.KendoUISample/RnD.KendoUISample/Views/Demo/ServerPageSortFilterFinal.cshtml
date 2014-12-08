@@ -7,6 +7,11 @@
     </h2>
     <div id="gridWithParam">
     </div>
+    <br />
+    <hr />
+    <br />
+    <div id="productGridWithParam">
+    </div>
 </div>
 <script type="text/javascript">
 
@@ -45,7 +50,7 @@
                 },
                 pageSize: 5,
                 serverPaging: true,
-                serverFiltering: false,
+                serverFiltering: true,
                 serverSorting: true
             },
             height: 250,
@@ -72,6 +77,63 @@
                                  width: 250
                              }]
         }); //end of kendo grid
+
+
+        $("#productGridWithParam").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: "/Demo/ProductReadWithParam"
+                },
+                schema: {
+                    data: function (data) {
+                        return data.Data;
+                    },
+                    model: {
+                        fields: {
+                            CategoryId: { type: "number" },
+                            Name: { type: "string", filterable: filterOption },
+                            Price: { type: "string", filterable: filterOption }
+                        }
+                    },
+                    total: function (data) {
+                        return data.Total;
+                    }
+                },
+                pageSize: 5,
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true
+            },
+            height: 250,
+            filterable: true,
+            groupable: true,
+            sortable: true,
+            pageable: {
+                input: true,
+                numeric: true,
+                info: true,
+                previousNext: true,
+                refresh: true,
+                pageSizes: true
+            },
+            columns: [{
+                field: "ProductId",
+                title: "Product Id",
+                width: 50,
+                filterable: false
+            },
+            {
+                field: "Name",
+                title: "Product Name",
+                width: 250
+            },
+            {
+                field: "Price",
+                title: "Product Price",
+                width: 250
+            }]
+        }); //end of kendo grid
+
 
 
     });
