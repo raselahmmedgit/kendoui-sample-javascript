@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RnD.KendoUISample", "RnD.KendoUISample\RnD.KendoUISample.csproj", "{0C8EAE99-590B-4FFC-AA10-B8E16695AAC3}"
 EndProject
 Global
